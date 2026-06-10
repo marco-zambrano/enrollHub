@@ -1,0 +1,5 @@
+[
+  { "id": "c1", "name": "Ingeniería en Sistemas", "totalCredits": 160 },
+  { "id": "c2", "name": "Administración de Empresas", "totalCredits": 150 },
+  { "id": "c3", "name": "Psicología", "totalCredits": 155 }
+]

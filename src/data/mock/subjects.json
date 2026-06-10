@@ -1,0 +1,10 @@
+[
+  { "id": "s1", "code": "MAT101", "name": "Matemáticas I", "credits": 4, "careerId": "c1", "prerequisites": [] },
+  { "id": "s2", "code": "FIS101", "name": "Física I", "credits": 4, "careerId": "c1", "prerequisites": ["s1"] },
+  { "id": "s3", "code": "PRO101", "name": "Programación I", "credits": 5, "careerId": "c1", "prerequisites": [] },
+  { "id": "s4", "code": "PRO102", "name": "Programación II", "credits": 5, "careerId": "c1", "prerequisites": ["s3"] },
+  { "id": "s5", "code": "BD201", "name": "Bases de Datos", "credits": 4, "careerId": "c1", "prerequisites": ["s4"] },
+  { "id": "s6", "code": "RED201", "name": "Redes de Computadoras", "credits": 4, "careerId": "c1", "prerequisites": ["s4"] },
+  { "id": "s7", "code": "EST101", "name": "Estadística", "credits": 3, "careerId": "c1", "prerequisites": ["s1"] },
+  { "id": "s8", "code": "ING101", "name": "Inglés Técnico", "credits": 3, "careerId": "c1", "prerequisites": [] }
+]
