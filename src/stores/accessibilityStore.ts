@@ -143,9 +143,6 @@ export const useAccessibilityStore = create<AccessibilityState>()(
         } = state
         return prefs
       },
-      onRehydrateStorage: () => (state) => {
-        state?.applyToDocument()
-      },
     },
   ),
 )

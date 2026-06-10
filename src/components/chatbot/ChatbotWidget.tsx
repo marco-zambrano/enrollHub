@@ -26,7 +26,7 @@ export function ChatbotWidget() {
   ])
   const panelRef = useRef<HTMLDivElement>(null)
   const user = useAuthStore((s) => s.user)
-  const enrollment = useEnrollmentStore()
+  const selectedScheduleIds = useEnrollmentStore((s) => s.selectedScheduleIds)
   const addEscalation = useAdminStore((s) => s.addEscalation)
 
   useFocusTrap(panelRef, open, () => setOpen(false))
@@ -39,7 +39,10 @@ export function ChatbotWidget() {
     setMessages((prev) => [...prev, userMsg])
     setInput('')
 
-    const response = getChatbotResponse(text, { user, enrollment })
+    const response = getChatbotResponse(text, {
+      user,
+      enrollment: { selectedScheduleIds },
+    })
     const botMsg: Message = { id: `b-${Date.now()}`, role: 'bot', text: response.text }
     setMessages((prev) => [...prev, botMsg])
 

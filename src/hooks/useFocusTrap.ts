@@ -1,4 +1,4 @@
-import { useEffect, type RefObject } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), textarea:not([disabled]), input:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
@@ -8,6 +8,9 @@ export function useFocusTrap(
   active: boolean,
   onEscape?: () => void,
 ) {
+  const onEscapeRef = useRef(onEscape)
+  onEscapeRef.current = onEscape
+
   useEffect(() => {
     if (!active || !containerRef.current) return
 
@@ -24,7 +27,7 @@ export function useFocusTrap(
 
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
-        onEscape?.()
+        onEscapeRef.current?.()
         return
       }
       if (e.key !== 'Tab') return
@@ -50,5 +53,5 @@ export function useFocusTrap(
       container.removeEventListener('keydown', handleKeyDown)
       previouslyFocused?.focus()
     }
-  }, [active, containerRef, onEscape])
+  }, [active, containerRef])
 }
