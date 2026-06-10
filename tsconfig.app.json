@@ -6,6 +6,7 @@
     "module": "esnext",
     "types": ["vite/client"],
     "skipLibCheck": true,
+    "resolveJsonModule": true,
 
     /* Bundler mode */
     "moduleResolution": "bundler",
@@ -19,7 +20,14 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "ignoreDeprecations": "6.0",
+
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/**/__tests__/**", "src/test/**"]
 }
