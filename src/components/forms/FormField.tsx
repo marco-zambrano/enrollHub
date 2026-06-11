@@ -48,7 +48,7 @@ export function FormField({
         aria-required={required}
         aria-invalid={!!error}
         aria-describedby={`${hint ? hintId : ''} ${error ? errorId : ''}`.trim() || undefined}
-        {...register(name)}
+        {...register(name, type === 'number' ? { valueAsNumber: true } : undefined)}
       />
       {hint && (
         <span id={hintId} className="field-hint block text-xs text-uni-slate">
