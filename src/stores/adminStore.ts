@@ -13,13 +13,13 @@ export interface EscalationCase {
   status: 'open' | 'resolved'
 }
 
-interface Career {
+export interface Career {
   id: string
   name: string
   totalCredits: number
 }
 
-interface Subject {
+export interface Subject {
   id: string
   code: string
   name: string
@@ -28,7 +28,7 @@ interface Subject {
   prerequisites: string[]
 }
 
-interface Period {
+export interface Period {
   id: string
   name: string
   startDate: string
@@ -43,10 +43,12 @@ interface AdminState {
   subjects: Subject[]
   periods: Period[]
   escalations: EscalationCase[]
-  addCareer: (career: Omit<Career, 'id'>) => void
+  addCareer: (career: Omit<Career, 'id'>) => string
   updateCareer: (id: string, data: Partial<Career>) => void
-  addSubject: (subject: Omit<Subject, 'id'>) => void
+  removeCareer: (id: string) => void
+  addSubject: (subject: Omit<Subject, 'id'>) => string
   updateSubject: (id: string, data: Partial<Subject>) => void
+  removeSubject: (id: string) => void
   addPeriod: (period: Omit<Period, 'id'>) => void
   addEscalation: (data: Omit<EscalationCase, 'id' | 'createdAt' | 'status'>) => void
   resolveEscalation: (id: string) => void
@@ -60,25 +62,36 @@ export const useAdminStore = create<AdminState>()(
       periods: periodsData as Period[],
       escalations: [],
 
-      addCareer: (career) =>
-        set((s) => ({
-          careers: [...s.careers, { ...career, id: `c-${Date.now()}` }],
-        })),
+      addCareer: (career) => {
+        const id = `c-${Date.now()}`
+        set((s) => ({ careers: [...s.careers, { ...career, id }] }))
+        return id
+      },
 
       updateCareer: (id, data) =>
         set((s) => ({
           careers: s.careers.map((c) => (c.id === id ? { ...c, ...data } : c)),
         })),
 
-      addSubject: (subject) =>
+      removeCareer: (id) =>
         set((s) => ({
-          subjects: [...s.subjects, { ...subject, id: `s-${Date.now()}` }],
+          careers: s.careers.filter((c) => c.id !== id),
+          subjects: s.subjects.filter((sub) => sub.careerId !== id),
         })),
+
+      addSubject: (subject) => {
+        const id = `s-${Date.now()}`
+        set((s) => ({ subjects: [...s.subjects, { ...subject, id }] }))
+        return id
+      },
 
       updateSubject: (id, data) =>
         set((s) => ({
           subjects: s.subjects.map((sub) => (sub.id === id ? { ...sub, ...data } : sub)),
         })),
+
+      removeSubject: (id) =>
+        set((s) => ({ subjects: s.subjects.filter((sub) => sub.id !== id) })),
 
       addPeriod: (period) =>
         set((s) => ({
