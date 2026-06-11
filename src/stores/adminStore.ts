@@ -38,11 +38,14 @@ export interface Period {
   active: boolean
 }
 
+const SEED_VERSION = 1
+
 interface AdminState {
   careers: Career[]
   subjects: Subject[]
   periods: Period[]
   escalations: EscalationCase[]
+  _seedVersion: number
   addCareer: (career: Omit<Career, 'id'>) => string
   updateCareer: (id: string, data: Partial<Career>) => void
   removeCareer: (id: string) => void
@@ -61,6 +64,7 @@ export const useAdminStore = create<AdminState>()(
       subjects: subjectsData as Subject[],
       periods: periodsData as Period[],
       escalations: [],
+      _seedVersion: SEED_VERSION,
 
       addCareer: (career) => {
         const id = `c-${Date.now()}`
@@ -118,6 +122,15 @@ export const useAdminStore = create<AdminState>()(
           ),
         })),
     }),
-    { name: 'enrollhub-admin' },
+    {
+      name: 'enrollhub-admin',
+      merge: (persisted, initial) => {
+        const p = persisted as Partial<AdminState>
+        if (!p._seedVersion || p._seedVersion !== SEED_VERSION) {
+          return { ...initial, _seedVersion: SEED_VERSION }
+        }
+        return { ...initial, ...p }
+      },
+    },
   ),
 )
