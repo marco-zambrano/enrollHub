@@ -147,7 +147,7 @@ function EditCareerModal({
               (c) => c.name.toLowerCase() === data.name.toLowerCase() && c.id !== career.id,
             )
             if (duplicate) {
-              throw new Error('Ya existe una carrera con ese nombre.')
+              throw new Error(`Ya existe una carrera llamada "${data.name}". No se puede añadir una carrera duplicada.`)
             }
             updateCareer(career.id, { name: data.name, totalCredits: data.totalCredits })
             onSaved()
@@ -464,7 +464,7 @@ export function CareersManagement() {
                   (c) => c.name.toLowerCase() === data.name.toLowerCase(),
                 )
                 if (duplicate) {
-                  throw new Error('Ya existe una carrera con ese nombre.')
+                  throw new Error(`Ya existe una carrera llamada "${data.name}". No se puede añadir una carrera duplicada.`)
                 }
                 addCareer({ name: data.name, totalCredits: data.totalCredits })
                 showToast('Carrera creada exitosamente.')
@@ -582,7 +582,7 @@ export function CareersManagement() {
                   (s) => s.code.toUpperCase() === data.code.toUpperCase(),
                 )
                 if (dupCode) {
-                  throw new Error('Ya existe una asignatura con ese código.')
+              throw new Error(`Ya existe una asignatura con el código "${data.code}". No se puede añadir una asignatura duplicada.`)
                 }
                 addSubject({
                   careerId: data.careerId,
