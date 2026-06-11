@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Button } from '@/components/ui/button'
+import { useAuthStore } from '@/stores/authStore'
 
 const STEPS = [
   {
@@ -24,6 +25,7 @@ const STEPS = [
 
 export function WelcomeTutorial() {
   const [step, setStep] = useState(0)
+  const navigate = useNavigate()
 
   useEffect(() => {
     document.title = 'Tutorial de bienvenida — EnrollHub'
@@ -67,8 +69,13 @@ export function WelcomeTutorial() {
         {step < STEPS.length - 1 ? (
           <Button onClick={() => setStep((s) => s + 1)}>Siguiente paso</Button>
         ) : (
-          <Button asChild>
-            <Link to="/student/offer">Ir a la oferta académica</Link>
+          <Button
+            onClick={() => {
+              useAuthStore.getState().updateProfile({ studentType: 'regular' })
+              navigate('/student/offer')
+            }}
+          >
+            Ir a la oferta académica
           </Button>
         )}
       </div>
