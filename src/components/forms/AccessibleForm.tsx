@@ -41,6 +41,7 @@ export function AccessibleForm<T extends FieldValues>({
   const [showConfirm, setShowConfirm] = useState(false)
   const [pendingData, setPendingData] = useState<T | null>(null)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   const handleSubmit = methods.handleSubmit(async (data) => {
     if (critical && confirmationMode) {
@@ -53,14 +54,17 @@ export function AccessibleForm<T extends FieldValues>({
 
   const executeSubmit = async (data: T) => {
     try {
+      setErrorMessage(null)
       await onSubmit(data)
       setStatus('success')
       if (successMessage) {
         addLiveMessage(successMessage)
       }
-    } catch {
+    } catch (err) {
       setStatus('error')
-      addLiveMessage('Error al enviar el formulario. Revisa los campos e intenta de nuevo.')
+      const msg = err instanceof Error ? err.message : 'Error al enviar el formulario. Revisa los campos e intenta de nuevo.'
+      setErrorMessage(msg)
+      addLiveMessage(msg)
     }
   }
 
@@ -82,7 +86,7 @@ export function AccessibleForm<T extends FieldValues>({
 
         {status === 'error' && (
           <p role="alert" className="mt-4 text-sm text-uni-error">
-            No se pudo completar el envío. Corrige los errores indicados e intenta nuevamente.
+            {errorMessage ?? 'No se pudo completar el envío. Corrige los errores indicados e intenta nuevamente.'}
           </p>
         )}
 
