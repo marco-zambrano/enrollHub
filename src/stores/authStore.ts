@@ -99,7 +99,7 @@ export const useAuthStore = create<AuthState>()(
           email: data.email,
           name: data.name,
           role: 'student',
-          studentType: 'new',
+          studentType: 'regular',
           careerId: data.careerId,
           completedCredits: 0,
           approvedSubjects: [],
