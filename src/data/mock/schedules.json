@@ -8,5 +8,16 @@
   { "id": "sch7", "subjectId": "s7", "parallel": "A", "professor": "Dra. Paredes", "day": "Miércoles", "startTime": "08:00", "endTime": "10:00", "capacity": 35, "enrolled": 30 },
   { "id": "sch8", "subjectId": "s8", "parallel": "A", "professor": "Lic. Herrera", "day": "Martes", "startTime": "16:00", "endTime": "18:00", "capacity": 30, "enrolled": 10 },
   { "id": "sch9", "subjectId": "s1", "parallel": "A", "professor": "Dr. Mendez", "day": "Lunes", "startTime": "10:00", "endTime": "12:00", "capacity": 40, "enrolled": 35 },
-  { "id": "sch10", "subjectId": "s2", "parallel": "A", "professor": "Dra. Silva", "day": "Martes", "startTime": "08:00", "endTime": "10:00", "capacity": 35, "enrolled": 28 }
+  { "id": "sch10", "subjectId": "s2", "parallel": "A", "professor": "Dra. Silva", "day": "Martes", "startTime": "08:00", "endTime": "10:00", "capacity": 35, "enrolled": 28 },
+  { "id": "sch11", "subjectId": "s9", "parallel": "A", "professor": "Msc. Flores", "day": "Lunes", "startTime": "14:00", "endTime": "16:00", "capacity": 40, "enrolled": 25 },
+  { "id": "sch12", "subjectId": "s9", "parallel": "B", "professor": "Ing. Paredes", "day": "Jueves", "startTime": "10:00", "endTime": "12:00", "capacity": 35, "enrolled": 15 },
+  { "id": "sch13", "subjectId": "s10", "parallel": "A", "professor": "Dr. Mendoza", "day": "Martes", "startTime": "14:00", "endTime": "16:00", "capacity": 35, "enrolled": 30 },
+  { "id": "sch14", "subjectId": "s11", "parallel": "A", "professor": "Msc. Cordero", "day": "Miércoles", "startTime": "10:00", "endTime": "12:00", "capacity": 40, "enrolled": 12 },
+  { "id": "sch15", "subjectId": "s12", "parallel": "A", "professor": "Lic. Aguirre", "day": "Viernes", "startTime": "14:00", "endTime": "16:00", "capacity": 30, "enrolled": 8 },
+  { "id": "sch16", "subjectId": "s13", "parallel": "A", "professor": "Dra. Quintero", "day": "Lunes", "startTime": "08:00", "endTime": "10:00", "capacity": 35, "enrolled": 30 },
+  { "id": "sch17", "subjectId": "s13", "parallel": "B", "professor": "Msc. Oviedo", "day": "Miércoles", "startTime": "14:00", "endTime": "16:00", "capacity": 30, "enrolled": 18 },
+  { "id": "sch18", "subjectId": "s14", "parallel": "A", "professor": "Dr. Campos", "day": "Martes", "startTime": "10:00", "endTime": "12:00", "capacity": 30, "enrolled": 30 },
+  { "id": "sch19", "subjectId": "s14", "parallel": "B", "professor": "Msc. Lozano", "day": "Jueves", "startTime": "14:00", "endTime": "16:00", "capacity": 28, "enrolled": 15 },
+  { "id": "sch20", "subjectId": "s15", "parallel": "A", "professor": "Ing. Valdez", "day": "Viernes", "startTime": "10:00", "endTime": "12:00", "capacity": 35, "enrolled": 14 },
+  { "id": "sch21", "subjectId": "s16", "parallel": "A", "professor": "Msc. Ponce", "day": "Miércoles", "startTime": "08:00", "endTime": "10:00", "capacity": 30, "enrolled": 22 }
 ]

@@ -6,5 +6,13 @@
   { "id": "s5", "code": "BD201", "name": "Bases de Datos", "credits": 4, "careerId": "c1", "prerequisites": ["s4"] },
   { "id": "s6", "code": "RED201", "name": "Redes de Computadoras", "credits": 4, "careerId": "c1", "prerequisites": ["s4"] },
   { "id": "s7", "code": "EST101", "name": "Estadística", "credits": 3, "careerId": "c1", "prerequisites": ["s1"] },
-  { "id": "s8", "code": "ING101", "name": "Inglés Técnico", "credits": 3, "careerId": "c1", "prerequisites": [] }
+  { "id": "s8", "code": "ING101", "name": "Inglés Técnico", "credits": 3, "careerId": "c1", "prerequisites": [] },
+  { "id": "s9", "code": "ADM101", "name": "Introducción a la Administración", "credits": 4, "careerId": "c2", "prerequisites": [] },
+  { "id": "s10", "code": "CON101", "name": "Contabilidad Básica", "credits": 4, "careerId": "c2", "prerequisites": [] },
+  { "id": "s11", "code": "ECO101", "name": "Economía General", "credits": 3, "careerId": "c2", "prerequisites": [] },
+  { "id": "s12", "code": "DER101", "name": "Derecho Laboral", "credits": 3, "careerId": "c2", "prerequisites": [] },
+  { "id": "s13", "code": "PSI101", "name": "Psicología General", "credits": 4, "careerId": "c3", "prerequisites": [] },
+  { "id": "s14", "code": "PSI102", "name": "Psicología del Desarrollo", "credits": 4, "careerId": "c3", "prerequisites": ["s13"] },
+  { "id": "s15", "code": "SOC101", "name": "Sociología", "credits": 3, "careerId": "c3", "prerequisites": [] },
+  { "id": "s16", "code": "EST101", "name": "Estadística para Psicología", "credits": 3, "careerId": "c3", "prerequisites": [] }
 ]
