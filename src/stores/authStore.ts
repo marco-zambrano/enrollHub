@@ -17,6 +17,7 @@ export interface User {
 
 interface AuthState {
   user: User | null
+  users: Array<User & { password: string }>
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>
   register: (data: RegisterData) => Promise<{ success: boolean; error?: string }>
   logout: () => void
@@ -66,10 +67,11 @@ export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
       user: null,
+      users: MOCK_USERS,
 
       login: async (email, password) => {
         await new Promise((r) => setTimeout(r, 300))
-        const found = MOCK_USERS.find(
+        const found = get().users.find(
           (u) => u.email === email && u.password === password,
         )
         if (!found) {
@@ -85,7 +87,7 @@ export const useAuthStore = create<AuthState>()(
 
       register: async (data) => {
         await new Promise((r) => setTimeout(r, 300))
-        const exists = MOCK_USERS.some((u) => u.email === data.email)
+        const exists = get().users.some((u) => u.email === data.email)
         if (exists) {
           return {
             success: false,
@@ -102,8 +104,10 @@ export const useAuthStore = create<AuthState>()(
           completedCredits: 0,
           approvedSubjects: [],
         }
-        MOCK_USERS.push({ ...newUser, password: data.password })
-        set({ user: newUser })
+        set((s) => ({
+          user: newUser,
+          users: [...s.users, { ...newUser, password: data.password }],
+        }))
         return { success: true }
       },
 
@@ -114,6 +118,20 @@ export const useAuthStore = create<AuthState>()(
         if (current) set({ user: { ...current, ...data } })
       },
     }),
-    { name: 'enrollhub-auth' },
+    {
+      name: 'enrollhub-auth',
+      merge: (persisted, initial) => {
+        const merged = { ...initial, ...(persisted as Partial<AuthState>) }
+        const persistedUsers = (persisted as Partial<AuthState> & { users?: Array<User & { password: string }> }).users ?? []
+        const persistedEmails = new Set(persistedUsers.map((u) => u.email))
+        const missingMockUsers = MOCK_USERS.filter((u) => !persistedEmails.has(u.email))
+        if (!persistedEmails.size) {
+          merged.users = [...MOCK_USERS]
+        } else if (missingMockUsers.length > 0) {
+          merged.users = [...persistedUsers, ...missingMockUsers]
+        }
+        return merged
+      },
+    },
   ),
 )

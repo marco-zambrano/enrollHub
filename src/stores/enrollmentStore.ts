@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
-import periods from '@/data/mock/periods.json'
+import { useAdminStore } from '@/stores/adminStore'
 import { getScheduleById, getSubjectById } from '@/lib/enrollmentValidation'
 
 export interface EnrollmentRecord {
@@ -43,7 +43,7 @@ export const useEnrollmentStore = create<EnrollmentState>()(
         const { selectedScheduleIds, enrollments } = get()
         if (selectedScheduleIds.length === 0) return null
 
-        const activePeriod = periods.find((p) => p.active)
+        const activePeriod = useAdminStore.getState().periods.find((p) => p.active)
         const totalCredits = selectedScheduleIds.reduce((sum, id) => {
           const sch = getScheduleById(id)
           const sub = sch ? getSubjectById(sch.subjectId) : null

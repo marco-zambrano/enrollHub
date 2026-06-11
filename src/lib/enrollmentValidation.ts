@@ -1,6 +1,5 @@
-import subjects from '@/data/mock/subjects.json'
 import schedules from '@/data/mock/schedules.json'
-import careers from '@/data/mock/careers.json'
+import { useAdminStore } from '@/stores/adminStore'
 import type { User } from '@/stores/authStore'
 
 export interface Schedule {
@@ -43,7 +42,7 @@ export function hasScheduleConflict(a: Schedule, b: Schedule) {
 export function getEligibleSubjects(user: User | null) {
   if (!user?.careerId) return []
   const approved = new Set(user.approvedSubjects || [])
-  return (subjects as Subject[]).filter((s) => {
+  return (useAdminStore.getState().subjects as Subject[]).filter((s) => {
     if (s.careerId !== user.careerId) return false
     if (approved.has(s.id)) return false
     return s.prerequisites.every((p) => approved.has(p))
@@ -53,7 +52,7 @@ export function getEligibleSubjects(user: User | null) {
 export function getPendingPrerequisites(user: User | null) {
   if (!user?.careerId) return []
   const approved = new Set(user.approvedSubjects || [])
-  return (subjects as Subject[])
+  return (useAdminStore.getState().subjects as Subject[])
     .filter((s) => s.careerId === user.careerId && !approved.has(s.id))
     .filter((s) => s.prerequisites.some((p) => !approved.has(p)))
     .map((s) => ({
@@ -64,7 +63,7 @@ export function getPendingPrerequisites(user: User | null) {
 
 export function getRemainingCredits(user: User | null) {
   if (!user?.careerId) return 0
-  const career = careers.find((c) => c.id === user.careerId)
+  const career = useAdminStore.getState().careers.find((c) => c.id === user.careerId)
   if (!career) return 0
   return Math.max(0, career.totalCredits - (user.completedCredits || 0))
 }
@@ -81,7 +80,7 @@ export function validateEnrollmentSelection(
   const selected = (schedules as Schedule[]).filter((s) => scheduleIds.includes(s.id))
 
   for (const sch of selected) {
-    const subject = (subjects as Subject[]).find((s) => s.id === sch.subjectId)
+    const subject = (useAdminStore.getState().subjects as Subject[]).find((s) => s.id === sch.subjectId)
     if (!subject) continue
     const approved = new Set(user?.approvedSubjects || [])
     const missing = subject.prerequisites.filter((p) => !approved.has(p))
@@ -115,7 +114,7 @@ export function validateEnrollmentSelection(
 }
 
 export function getSubjectById(id: string) {
-  return (subjects as Subject[]).find((s) => s.id === id)
+  return (useAdminStore.getState().subjects as Subject[]).find((s) => s.id === id)
 }
 
 export function getScheduleById(id: string) {
