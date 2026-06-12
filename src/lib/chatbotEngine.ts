@@ -1,9 +1,3 @@
-import {
-  getEligibleSubjects,
-  getPendingPrerequisites,
-  getRemainingCredits,
-  getSubjectById,
-} from '@/lib/enrollmentValidation'
 import type { User } from '@/stores/authStore'
 
 interface ChatContext {
@@ -11,68 +5,89 @@ interface ChatContext {
   enrollment: { selectedScheduleIds: string[] }
 }
 
-export function getChatbotResponse(
+const API_KEY = import.meta.env.VITE_GEMINI_API_KEY
+const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.0-flash'
+const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`
+
+function buildSystemPrompt(ctx: ChatContext): string {
+  const { user } = ctx
+
+  return `Eres un asistente virtual de EnrollHub, una plataforma de matrícula universitaria.
+Tu rol es ayudar a estudiantes con dudas sobre el proceso de matrícula, materias, horarios y requisitos.
+
+Contexto del estudiante:
+${user ? `- Nombre: ${user.name}
+- Correo: ${user.email}
+- Carrera: ${user.careerId || 'No asignada'}
+- Créditos aprobados: ${user.completedCredits ?? 0}
+- Materias aprobadas: ${(user.approvedSubjects ?? []).join(', ') || 'Ninguna'}
+- Tipo de estudiante: ${user.studentType || 'No especificado'}` : '- No ha iniciado sesión (respuestas generales)'}
+
+Reglas:
+1. Responde SIEMPRE en español, de forma clara y concisa (máximo 3 párrafos).
+2. Si el usuario pregunta sobre materias que puede cursar, prerrequisitos, créditos o proceso de matrícula, usa el contexto proporcionado.
+3. Si la consulta está fuera del alcance de EnrollHub, responde cordialmente que solo puedes ayudar con temas de matrícula.
+4. No inventes información. Si no sabes algo, indícalo honestamente.
+5. Si el usuario necesita ayuda que no puedes brindar, indica que escalarás el caso al equipo administrativo.`
+}
+
+export async function getChatbotResponse(
   question: string,
   ctx: ChatContext,
-): { text: string; escalate: boolean } {
-  const q = question.toLowerCase().normalize('NFD').replace(/\p{M}/gu, '')
-
-  if (q.includes('materia') && (q.includes('matricular') || q.includes('puedo') || q.includes('cursar'))) {
-    const eligible = getEligibleSubjects(ctx.user)
-    if (!ctx.user) {
-      return { text: 'Inicia sesión para ver las materias disponibles según tu avance académico.', escalate: false }
-    }
-    if (eligible.length === 0) {
-      return { text: 'No tienes materias elegibles en este momento. Revisa tus prerrequisitos pendientes.', escalate: false }
-    }
-    const list = eligible.map((s) => `${s.code} — ${s.name} (${s.credits} créditos)`).join('; ')
-    return { text: `Puedes matricular: ${list}.`, escalate: false }
-  }
-
-  if (q.includes('prerrequisito') || q.includes('requisito')) {
-    const pending = getPendingPrerequisites(ctx.user)
-    if (!ctx.user) return { text: 'Inicia sesión para consultar tus prerrequisitos.', escalate: false }
-    if (pending.length === 0) {
-      return { text: 'No tienes prerrequisitos pendientes. ¡Puedes continuar con tu matrícula!', escalate: false }
-    }
-    const list = pending
-      .map((p) => `${p.subject.name}: falta ${p.missing.map((m) => getSubjectById(m)?.code || m).join(', ')}`)
-      .join('; ')
-    return { text: `Prerrequisitos pendientes: ${list}.`, escalate: false }
-  }
-
-  if (q.includes('credito') || q.includes('falta')) {
-    const remaining = getRemainingCredits(ctx.user)
-    if (!ctx.user) return { text: 'Inicia sesión para consultar tus créditos.', escalate: false }
+): Promise<{ text: string; escalate: boolean }> {
+  if (!API_KEY || API_KEY === 'tu-api-key-de-gemini') {
     return {
-      text: `Te faltan ${remaining} créditos para completar tu carrera. Llevas ${ctx.user.completedCredits || 0} créditos aprobados.`,
+      text: 'El asistente no está configurado. El administrador debe agregar una clave de API de Gemini en el archivo .env.',
       escalate: false,
     }
   }
 
-  if (q.includes('proceso') || q.includes('como') || q.includes('paso')) {
-    return {
-      text: 'El proceso de matrícula tiene estos pasos: 1) Revisar elegibilidad, 2) Ver oferta académica, 3) Seleccionar materias y horarios, 4) Validar choques, 5) Confirmar matrícula, 6) Descargar comprobante.',
-      escalate: false,
-    }
-  }
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        systemInstruction: {
+          parts: [{ text: buildSystemPrompt(ctx) }],
+        },
+        contents: [
+          {
+            parts: [{ text: question }],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 512,
+        },
+      }),
+    })
 
-  if (q.includes('horario') || q.includes('choque')) {
-    return {
-      text: 'El sistema detecta automáticamente choques de horario al seleccionar paralelos. Si hay conflicto, verás un mensaje de error con sugerencia para elegir otro horario.',
-      escalate: false,
+    if (!res.ok) {
+      const errBody = await res.text()
+      console.error('Gemini API error:', res.status, errBody)
+      return {
+        text: 'Ocurrió un error al contactar el asistente. Intenta de nuevo más tarde.',
+        escalate: true,
+      }
     }
-  }
 
-  if (q.includes('comprobante') || q.includes('descargar')) {
-    return {
-      text: 'Después de confirmar tu matrícula, accede a "Comprobante" desde tu panel para ver e imprimir tu registro.',
-      escalate: false,
+    const data = await res.json()
+    const text =
+      data.candidates?.[0]?.content?.parts?.[0]?.text?.trim() || ''
+
+    if (!text) {
+      return {
+        text: 'No obtuve una respuesta válida. He escalado tu consulta al equipo administrativo.',
+        escalate: true,
+      }
     }
-  }
 
-  return {
-    text: 'No pude resolver tu consulta. He escalado tu caso al equipo administrativo. Te contactarán pronto.',
-    escalate: true,
+    return { text, escalate: false }
+  } catch (err) {
+    console.error('Chatbot API call failed:', err)
+    return {
+      text: 'No pude conectar con el servidor. He escalado tu caso al equipo administrativo.',
+      escalate: true,
+    }
   }
 }

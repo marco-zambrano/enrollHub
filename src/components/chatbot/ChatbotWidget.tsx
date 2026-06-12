@@ -24,6 +24,7 @@ export function ChatbotWidget() {
       text: '¡Hola! Soy tu asistente de matrícula. Puedo ayudarte con materias, prerrequisitos y el proceso de inscripción.',
     },
   ])
+  const [loading, setLoading] = useState(false)
   const panelRef = useRef<HTMLDivElement>(null)
   const user = useAuthStore((s) => s.user)
   const selectedScheduleIds = useEnrollmentStore((s) => s.selectedScheduleIds)
@@ -31,20 +32,22 @@ export function ChatbotWidget() {
 
   useFocusTrap(panelRef, open, () => setOpen(false))
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     const text = input.trim()
-    if (!text) return
+    if (!text || loading) return
 
     const userMsg: Message = { id: `u-${Date.now()}`, role: 'user', text }
     setMessages((prev) => [...prev, userMsg])
     setInput('')
+    setLoading(true)
 
-    const response = getChatbotResponse(text, {
+    const response = await getChatbotResponse(text, {
       user,
       enrollment: { selectedScheduleIds },
     })
     const botMsg: Message = { id: `b-${Date.now()}`, role: 'bot', text: response.text }
     setMessages((prev) => [...prev, botMsg])
+    setLoading(false)
 
     if (response.escalate) {
       addEscalation({
@@ -123,8 +126,9 @@ export function ChatbotWidget() {
               onChange={(e) => setInput(e.target.value)}
               placeholder="Escribe tu pregunta..."
               aria-label="Mensaje para el asistente"
+              disabled={loading}
             />
-            <Button type="submit" size="icon" aria-label="Enviar mensaje">
+            <Button type="submit" size="icon" aria-label="Enviar mensaje" disabled={loading}>
               <Send className="h-4 w-4" aria-hidden="true" />
             </Button>
           </form>
