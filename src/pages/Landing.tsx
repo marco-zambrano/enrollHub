@@ -26,6 +26,24 @@ export function Landing() {
         </div>
       </section>
 
+      <section className="mt-16" aria-labelledby="video-heading">
+        <h2 id="video-heading" className="sr-only">Video institucional</h2>
+        <div className="mx-auto max-w-3xl">
+          <div className="relative aspect-video overflow-hidden rounded-lg shadow-md">
+            <iframe
+              src="https://www.youtube.com/embed/iG9CE55wbtY"
+              title="Do schools kill creativity? | Sir Ken Robinson | TED"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+              className="absolute inset-0 h-full w-full"
+            />
+          </div>
+          <p className="mt-2 text-center text-sm text-uni-slate">
+            Sir Ken Robinson — ¿Las escuelas matan la creatividad? (TED)
+          </p>
+        </div>
+      </section>
+
       <section className="mt-16 grid gap-6 sm:grid-cols-3" aria-labelledby="features-heading">
         <h2 id="features-heading" className="sr-only">
           Características principales
