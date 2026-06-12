@@ -38,7 +38,7 @@ export interface Period {
   active: boolean
 }
 
-const SEED_VERSION = 1
+const SEED_VERSION = 2
 
 interface AdminState {
   careers: Career[]

@@ -106,6 +106,37 @@ All routes under `AppLayout` (has Header, SkipLink, AccessibilityMenu). Protecte
 - `displayName` on `forwardRef` components
 - Framer Motion for animations (respects `prefers-reduced-motion` via CSS data attribute)
 
+## Seed data (mock)
+
+All default data lives in `src/data/mock/`:
+
+| File | Content |
+|------|---------|
+| `careers.json` | 10 careers (c1-c10) |
+| `subjects.json` | 44 subjects (s1-s44), 4–8 per career |
+| `schedules.json` | 59 schedules (sch1-sch59), 1–3 parallels per subject |
+| `periods.json` | 1 active period (2026-1) |
+
+### How to add/update seed data
+
+1. Edit the JSON files in `src/data/mock/`
+2. Bump `SEED_VERSION` in `src/stores/adminStore.ts` (line ~20). The store's `merge` callback detects the version mismatch and replaces stale localStorage data with the new JSON seed.
+3. Run `bun run build` to verify
+4. Commit the JSON changes + the SEED_VERSION bump together
+
+**ID conventions:**
+- Careers: `c1`, `c2`, ..., `cN`
+- Subjects: `s1`, `s2`, ..., `sN`
+- Schedules: `sch1`, `sch2`, ..., `schN`
+- Keep existing IDs stable so mock users and enrollments don't break
+- Subject `careerId` must reference an existing career id
+- Schedule `subjectId` must reference an existing subject id
+
+**Parallel rules:**
+- Distribute 1–3 parallels per subject for variety
+- Use `Lunes`–`Sábado` for days, `08:00`–`18:00` for time slots
+- Keep `enrolled` ≤ `capacity` (simulate real occupancy)
+
 ## Notable hooks
 
 - `useSessionTimeout` — session expiry warning + extension (src/hooks/)

@@ -1,5 +1,12 @@
 [
   { "id": "c1", "name": "Ingeniería en Sistemas", "totalCredits": 160 },
   { "id": "c2", "name": "Administración de Empresas", "totalCredits": 150 },
-  { "id": "c3", "name": "Psicología", "totalCredits": 155 }
+  { "id": "c3", "name": "Psicología", "totalCredits": 155 },
+  { "id": "c4", "name": "Medicina", "totalCredits": 180 },
+  { "id": "c5", "name": "Derecho", "totalCredits": 160 },
+  { "id": "c6", "name": "Arquitectura", "totalCredits": 170 },
+  { "id": "c7", "name": "Contabilidad", "totalCredits": 145 },
+  { "id": "c8", "name": "Marketing", "totalCredits": 140 },
+  { "id": "c9", "name": "Diseño Gráfico", "totalCredits": 150 },
+  { "id": "c10", "name": "Ingeniería Civil", "totalCredits": 175 }
 ]
