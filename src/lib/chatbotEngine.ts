@@ -7,7 +7,7 @@ interface ChatContext {
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY
 const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.0-flash'
-const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`
+const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models'
 
 function buildSystemPrompt(ctx: ChatContext): string {
   const { user } = ctx
@@ -43,7 +43,7 @@ export async function getChatbotResponse(
   }
 
   try {
-    const res = await fetch(API_URL, {
+    const res = await fetch(`${API_BASE}/${MODEL}:generateContent?key=${API_KEY}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -64,9 +64,9 @@ export async function getChatbotResponse(
 
     if (!res.ok) {
       const errBody = await res.text()
-      console.error('Gemini API error:', res.status, errBody)
+      console.error(`[chatbot] Gemini API error ${res.status} (model: ${MODEL}):`, errBody)
       return {
-        text: 'Ocurrió un error al contactar el asistente. Intenta de nuevo más tarde.',
+        text: `Error del asistente (${res.status}). Revisa que la API key y el modelo "${MODEL}" sean válidos en https://aistudio.google.com/apikey`,
         escalate: true,
       }
     }
