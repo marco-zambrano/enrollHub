@@ -23,6 +23,7 @@ export interface AccessibilityPreferences {
   headingTreeVisible: boolean
   focusStyle: FocusStyle
   accessibleNameCheck: boolean
+  characterKeyShortcuts: boolean
 
   // Comprehensible
   language: 'es' | 'en'
@@ -68,6 +69,7 @@ const defaults: AccessibilityPreferences = {
   headingTreeVisible: false,
   focusStyle: 'default',
   accessibleNameCheck: false,
+  characterKeyShortcuts: false,
   language: 'es',
   noAutoContextChange: false,
   showErrors: false,

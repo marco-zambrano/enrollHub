@@ -4,9 +4,11 @@ import { SkipLink } from './SkipLink'
 import { Header } from './Header'
 import { AccessibilityMenu } from '@/components/accessibility/AccessibilityMenu'
 import { ChatbotWidget } from '@/components/chatbot/ChatbotWidget'
+import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts'
 
 export function AppLayout() {
   const { t } = useTranslation()
+  useKeyboardShortcuts()
 
   return (
     <>

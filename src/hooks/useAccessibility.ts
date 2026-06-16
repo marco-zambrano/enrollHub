@@ -26,6 +26,7 @@ export function useAccessibility() {
       headingTreeVisible: s.headingTreeVisible,
       focusStyle: s.focusStyle,
       accessibleNameCheck: s.accessibleNameCheck,
+      characterKeyShortcuts: s.characterKeyShortcuts,
       language: s.language,
       noAutoContextChange: s.noAutoContextChange,
       showErrors: s.showErrors,

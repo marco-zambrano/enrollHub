@@ -94,6 +94,7 @@ export function AccessibilityMenu() {
     headingTreeVisible,
     focusStyle,
     accessibleNameCheck,
+    characterKeyShortcuts,
     language,
     noAutoContextChange,
     showErrors,
@@ -220,6 +221,13 @@ export function AccessibilityMenu() {
               </Section>
 
               <Section title={t('a11yOperable')} criterion={t('a11yPrinciple', { n: 2 })}>
+                <ToggleRow
+                  id="a11y-shortcuts"
+                  label={t('a11yShortcuts')}
+                  description={t('a11yShortcutsHint')}
+                  checked={characterKeyShortcuts}
+                  onChange={(v) => setPreference('characterKeyShortcuts', v)}
+                />
                 <ToggleRow
                   id="a11y-keyboard"
                   label={t('a11yKeyboard')}
