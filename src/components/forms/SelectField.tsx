@@ -1,4 +1,5 @@
 import { useFormContext, Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { AlertCircle } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 
@@ -16,6 +17,7 @@ interface SelectFieldProps {
 }
 
 export function SelectField({ name, label, options, hint, required = false }: SelectFieldProps) {
+  const { t } = useTranslation()
   const {
     control,
     formState: { errors },
@@ -31,7 +33,7 @@ export function SelectField({ name, label, options, hint, required = false }: Se
         {required && (
           <>
             <span aria-hidden="true"> *</span>
-            <span className="sr-only"> (requerido)</span>
+            <span className="sr-only"> ({t('required')})</span>
           </>
         )}
       </Label>
@@ -49,7 +51,7 @@ export function SelectField({ name, label, options, hint, required = false }: Se
             onChange={field.onChange}
             onBlur={field.onBlur}
           >
-            <option value="">Selecciona una opción</option>
+            <option value="">{t('selectOption')}</option>
             {options.map((opt) => (
               <option key={opt.value} value={opt.value}>
                 {opt.label}
@@ -77,3 +79,4 @@ export function SelectField({ name, label, options, hint, required = false }: Se
     </div>
   )
 }
+

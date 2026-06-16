@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Accessibility } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAccessibility } from '@/hooks/useAccessibility'
@@ -71,6 +72,7 @@ function Section({
 }
 
 export function AccessibilityMenu() {
+  const { t } = useTranslation()
   const panelRef = useRef<HTMLElement>(null)
   const triggerRef = useRef<HTMLButtonElement>(null)
   const {
@@ -113,7 +115,7 @@ export function AccessibilityMenu() {
         ref={triggerRef}
         className="fixed right-4 bottom-4 z-[8000] h-14 w-14 rounded-full shadow-lg"
         size="icon"
-        aria-label="Abrir menú de accesibilidad"
+        aria-label={t('a11yOpenMenu')}
         aria-expanded={menuOpen}
         aria-controls="accessibility-menu-panel"
         onClick={() => setMenuOpen(!menuOpen)}
@@ -132,49 +134,49 @@ export function AccessibilityMenu() {
             ref={panelRef}
             id="accessibility-menu-panel"
             role="complementary"
-            aria-label="Menú de accesibilidad"
+            aria-label={t('a11yTitle')}
             className="fixed top-0 right-0 z-[8002] flex h-full w-full max-w-sm flex-col border-l border-uni-border bg-white shadow-2xl"
           >
             <header className="flex items-center justify-between border-b border-uni-border px-4 py-4">
               <h2 className="font-display text-lg font-bold text-uni-navy">
-                Accesibilidad
+                {t('a11yTitle')}
               </h2>
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => setMenuOpen(false)}
-                aria-label="Cerrar menú de accesibilidad"
+                aria-label={t('a11yCloseMenu')}
               >
-                Cerrar
+                {t('close')}
               </Button>
             </header>
 
             <div className="flex-1 overflow-y-auto">
-              <Section title="Perceptible" criterion="Principio 1">
+              <Section title={t('a11yPerceptible')} criterion={t('a11yPrinciple', { n: 1 })}>
                 <ToggleRow
                   id="a11y-image-desc"
-                  label="Descripción de imágenes"
-                  description="WCAG 1.1.1 — Activar descripciones en voz alta"
+                  label={t('a11yImageDesc')}
+                  description={t('a11yImageDescHint')}
                   checked={imageDescriptions}
                   onChange={(v) => setPreference('imageDescriptions', v)}
                 />
                 <ToggleRow
                   id="a11y-headings"
-                  label="Indicador de encabezados"
-                  description="WCAG 1.3.1 — Resaltar encabezados activos"
+                  label={t('a11yHeadings')}
+                  description={t('a11yHeadingsHint')}
                   checked={showHeadings}
                   onChange={(v) => setPreference('showHeadings', v)}
                 />
                 <ToggleRow
                   id="a11y-reading-order"
-                  label="Orden de lectura"
-                  description="WCAG 1.3.2 — Mostrar secuencia del DOM"
+                  label={t('a11yReadingOrder')}
+                  description={t('a11yReadingOrderHint')}
                   checked={readingOrderVisible}
                   onChange={(v) => setPreference('readingOrderVisible', v)}
                 />
                 <div className="py-2">
                   <label htmlFor="a11y-colorblind" className="text-sm font-medium text-uni-navy">
-                    Modo daltónico (1.4.1)
+                    {t('a11yColorblind')}
                   </label>
                   <select
                     id="a11y-colorblind"
@@ -184,7 +186,7 @@ export function AccessibilityMenu() {
                     }
                     className="mt-1 w-full rounded-md border border-uni-border p-2 text-sm"
                   >
-                    <option value="none">Ninguno</option>
+                    <option value="none">{t('a11yColorblindNone')}</option>
                     <option value="protanopia">Protanopia</option>
                     <option value="deuteranopia">Deuteranopia</option>
                     <option value="tritanopia">Tritanopia</option>
@@ -192,14 +194,14 @@ export function AccessibilityMenu() {
                 </div>
                 <ToggleRow
                   id="a11y-contrast"
-                  label="Alto contraste"
-                  description="WCAG 1.4.3 — Fondo negro, texto blanco"
+                  label={t('a11yContrast')}
+                  description={t('a11yContrastHint')}
                   checked={highContrast}
                   onChange={(v) => setPreference('highContrast', v)}
                 />
                 <div className="py-2">
                   <label htmlFor="a11y-font-scale" className="text-sm font-medium text-uni-navy">
-                    Tamaño de fuente: {fontScale}% (1.4.4)
+                    {t('a11yFontScale', { scale: fontScale })}
                   </label>
                   <input
                     id="a11y-font-scale"
@@ -217,59 +219,59 @@ export function AccessibilityMenu() {
                 </div>
               </Section>
 
-              <Section title="Operable" criterion="Principio 2">
+              <Section title={t('a11yOperable')} criterion={t('a11yPrinciple', { n: 2 })}>
                 <ToggleRow
                   id="a11y-keyboard"
-                  label="Indicador modo teclado"
-                  description="WCAG 2.1.1"
+                  label={t('a11yKeyboard')}
+                  description={t('a11yKeyboardHint')}
                   checked={keyboardModeIndicator}
                   onChange={(v) => setPreference('keyboardModeIndicator', v)}
                 />
                 <ToggleRow
                   id="a11y-focus-monitor"
-                  label="Monitor de foco"
-                  description="WCAG 2.1.2 — Sin trampas de foco"
+                  label={t('a11yFocusMonitor')}
+                  description={t('a11yFocusMonitorHint')}
                   checked={focusMonitor}
                   onChange={(v) => setPreference('focusMonitor', v)}
                 />
                 <ToggleRow
                   id="a11y-session"
-                  label="Extender sesión"
-                  description="WCAG 2.2.1 — Desactivar timeout"
+                  label={t('a11ySession')}
+                  description={t('a11ySessionHint')}
                   checked={sessionExtension}
                   onChange={(v) => setPreference('sessionExtension', v)}
                 />
                 <ToggleRow
                   id="a11y-motion"
-                  label="Detener animaciones"
-                  description="WCAG 2.2.2"
+                  label={t('a11yMotion')}
+                  description={t('a11yMotionHint')}
                   checked={reduceMotion}
                   onChange={(v) => setPreference('reduceMotion', v)}
                 />
                 <ToggleRow
                   id="a11y-tab-order"
-                  label="Orden de tabulación"
-                  description="WCAG 2.4.3"
+                  label={t('a11yTabOrder')}
+                  description={t('a11yTabOrderHint')}
                   checked={tabOrderVisible}
                   onChange={(v) => setPreference('tabOrderVisible', v)}
                 />
                 <ToggleRow
                   id="a11y-links"
-                  label="Destacar enlaces"
-                  description="WCAG 2.4.4"
+                  label={t('a11yLinks')}
+                  description={t('a11yLinksHint')}
                   checked={highlightLinks}
                   onChange={(v) => setPreference('highlightLinks', v)}
                 />
                 <ToggleRow
                   id="a11y-heading-tree"
-                  label="Árbol de encabezados"
-                  description="WCAG 2.4.6"
+                  label={t('a11yHeadingTree')}
+                  description={t('a11yHeadingTreeHint')}
                   checked={headingTreeVisible}
                   onChange={(v) => setPreference('headingTreeVisible', v)}
                 />
                 <div className="py-2">
                   <label htmlFor="a11y-focus-style" className="text-sm font-medium text-uni-navy">
-                    Estilo de foco (2.4.7)
+                    {t('a11yFocusStyle')}
                   </label>
                   <select
                     id="a11y-focus-style"
@@ -279,25 +281,25 @@ export function AccessibilityMenu() {
                     }
                     className="mt-1 w-full rounded-md border border-uni-border p-2 text-sm"
                   >
-                    <option value="default">Predeterminado</option>
-                    <option value="thick">Contorno grueso</option>
-                    <option value="yellow">Amarillo</option>
-                    <option value="green">Verde</option>
+                    <option value="default">{t('a11yFocusDefault')}</option>
+                    <option value="thick">{t('a11yFocusThick')}</option>
+                    <option value="yellow">{t('a11yFocusYellow')}</option>
+                    <option value="green">{t('a11yFocusGreen')}</option>
                   </select>
                 </div>
                 <ToggleRow
                   id="a11y-names"
-                  label="Verificar nombres accesibles"
-                  description="WCAG 2.5.3"
+                  label={t('a11yNames')}
+                  description={t('a11yNamesHint')}
                   checked={accessibleNameCheck}
                   onChange={(v) => setPreference('accessibleNameCheck', v)}
                 />
               </Section>
 
-              <Section title="Comprensible" criterion="Principio 3">
+              <Section title={t('a11yComprehensible')} criterion={t('a11yPrinciple', { n: 3 })}>
                 <div className="py-2">
                   <label htmlFor="a11y-lang" className="text-sm font-medium text-uni-navy">
-                    Idioma (3.1.1)
+                    {t('a11yLang')}
                   </label>
                   <select
                     id="a11y-lang"
@@ -313,53 +315,53 @@ export function AccessibilityMenu() {
                 </div>
                 <ToggleRow
                   id="a11y-no-auto"
-                  label="Sin cambios automáticos"
-                  description="WCAG 3.2.2"
+                  label={t('a11yNoAuto')}
+                  description={t('a11yNoAutoHint')}
                   checked={noAutoContextChange}
                   onChange={(v) => setPreference('noAutoContextChange', v)}
                 />
                 <ToggleRow
                   id="a11y-errors"
-                  label="Destacar errores"
-                  description="WCAG 3.3.1"
+                  label={t('a11yErrors')}
+                  description={t('a11yErrorsHint')}
                   checked={showErrors}
                   onChange={(v) => setPreference('showErrors', v)}
                 />
                 <ToggleRow
                   id="a11y-hints"
-                  label="Mostrar instrucciones"
-                  description="WCAG 3.3.2"
+                  label={t('a11yHints')}
+                  description={t('a11yHintsHint')}
                   checked={showHints}
                   onChange={(v) => setPreference('showHints', v)}
                 />
                 <ToggleRow
                   id="a11y-suggestions"
-                  label="Sugerencias expandidas"
-                  description="WCAG 3.3.3"
+                  label={t('a11ySuggestions')}
+                  description={t('a11ySuggestionsHint')}
                   checked={expandedErrorSuggestions}
                   onChange={(v) => setPreference('expandedErrorSuggestions', v)}
                 />
                 <ToggleRow
                   id="a11y-confirm"
-                  label="Confirmación en envíos críticos"
-                  description="WCAG 3.3.4"
+                  label={t('a11yConfirm')}
+                  description={t('a11yConfirmHint')}
                   checked={confirmationMode}
                   onChange={(v) => setPreference('confirmationMode', v)}
                 />
               </Section>
 
-              <Section title="Robustez" criterion="Principio 4">
+              <Section title={t('a11yRobust')} criterion={t('a11yPrinciple', { n: 4 })}>
                 <ToggleRow
                   id="a11y-aria-roles"
-                  label="Overlay roles ARIA"
-                  description="WCAG 4.1.2"
+                  label={t('a11yAriaRoles')}
+                  description={t('a11yAriaRolesHint')}
                   checked={ariaRolesVisible}
                   onChange={(v) => setPreference('ariaRolesVisible', v)}
                 />
                 <ToggleRow
                   id="a11y-live-log"
-                  label="Log aria-live"
-                  description="WCAG 4.1.3"
+                  label={t('a11yLiveLog')}
+                  description={t('a11yLiveLogHint')}
                   checked={liveRegionLogVisible}
                   onChange={(v) => setPreference('liveRegionLogVisible', v)}
                 />

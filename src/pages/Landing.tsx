@@ -27,11 +27,11 @@ export function Landing() {
       </section>
 
       <section className="mt-16" aria-labelledby="video-heading">
-        <h2 id="video-heading" className="sr-only">Video institucional</h2>
+        <h2 id="video-heading" className="sr-only">{t('videoHeading')}</h2>
         <div className="mx-auto max-w-3xl">
           <div className="relative aspect-video overflow-hidden rounded-lg shadow-md">
             <iframe
-              src="https://www.youtube.com/embed/iG9CE55wbtY"
+              src="https://www.youtube.com/embed/iG9CE55wbtY?cc_load_policy=1&cc_lang_pref=es"
               title="Do schools kill creativity? | Sir Ken Robinson | TED"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
@@ -39,30 +39,61 @@ export function Landing() {
             />
           </div>
           <p className="mt-2 text-center text-sm text-uni-slate">
-            Sir Ken Robinson — ¿Las escuelas matan la creatividad? (TED)
+            {t('videoCaption')}
           </p>
+
+          <details className="mt-4 rounded-lg border border-uni-border bg-white p-4">
+            <summary className="cursor-pointer font-display text-sm font-semibold text-uni-navy">
+              {t('transcriptTitle')}
+            </summary>
+            <div className="mt-3 space-y-3 text-sm leading-relaxed text-uni-slate">
+              <p>{t('transcriptP1')}</p>
+              <p>{t('transcriptP2')}</p>
+              <p>{t('transcriptP3')}</p>
+            </div>
+          </details>
+
+          <details className="mt-2 rounded-lg border border-uni-border bg-white p-4">
+            <summary className="cursor-pointer font-display text-sm font-semibold text-uni-navy">
+              {t('audioDescTitle')}
+            </summary>
+            <div className="mt-3 space-y-3 text-sm leading-relaxed text-uni-slate">
+              <p>
+                <strong>{t('a11yFocusActive').split(' ')[0]}:</strong> {t('audioDescScene')}
+              </p>
+              <p>
+                <strong>Orador:</strong> {t('audioDescSpeaker')}
+              </p>
+              <p>
+                <strong>Público:</strong> {t('audioDescAudience')}
+              </p>
+              <p>
+                <strong>Visual:</strong> {t('audioDescVisual')}
+              </p>
+            </div>
+          </details>
         </div>
       </section>
 
       <section className="mt-16 grid gap-6 sm:grid-cols-3" aria-labelledby="features-heading">
         <h2 id="features-heading" className="sr-only">
-          Características principales
+          {t('featuresHeading')}
         </h2>
         {[
           {
             icon: BookOpen,
-            title: 'Proceso guiado',
-            desc: 'Matrícula en máximo 8 pasos con validación automática de prerrequisitos y horarios.',
+            title: t('featureGuidedTitle'),
+            desc: t('featureGuidedDesc'),
           },
           {
             icon: Shield,
-            title: 'WCAG 2.2 AA',
-            desc: 'Menú de accesibilidad permanente con 4 categorías y soporte completo de teclado.',
+            title: t('featureWcagTitle'),
+            desc: t('featureWcagDesc'),
           },
           {
             icon: Clock,
-            title: 'Rápido y confiable',
-            desc: 'Completa tu matrícula en menos de 5 minutos con confirmación y comprobante digital.',
+            title: t('featureFastTitle'),
+            desc: t('featureFastDesc'),
           },
         ].map(({ icon: Icon, title, desc }) => (
           <article
@@ -78,12 +109,12 @@ export function Landing() {
 
       <section className="mt-12 rounded-lg bg-uni-gray p-6 text-left" aria-labelledby="demo-heading">
         <h2 id="demo-heading" className="font-display text-lg font-semibold text-uni-navy">
-          Cuentas de demostración
+          {t('demoTitle')}
         </h2>
         <ul className="mt-3 space-y-1 text-sm text-uni-slate">
-          <li>Primer ingreso: nuevo@uni.edu / demo1234</li>
-          <li>Estudiante regular: estudiante@uni.edu / demo1234</li>
-          <li>Administrador: admin@uni.edu / admin1234</li>
+          <li>{t('demoNew')}</li>
+          <li>{t('demoStudent')}</li>
+          <li>{t('demoAdmin')}</li>
         </ul>
       </section>
     </div>

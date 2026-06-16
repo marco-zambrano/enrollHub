@@ -1,4 +1,5 @@
 import { useFormContext } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { AlertCircle } from 'lucide-react'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
@@ -21,6 +22,7 @@ export function FormField({
   required = false,
   autoComplete,
 }: FormFieldProps) {
+  const { t } = useTranslation()
   const {
     register,
     formState: { errors },
@@ -37,7 +39,7 @@ export function FormField({
         {required && (
           <>
             <span aria-hidden="true"> *</span>
-            <span className="sr-only"> (requerido)</span>
+            <span className="sr-only"> ({t('required')})</span>
           </>
         )}
       </Label>
@@ -67,7 +69,7 @@ export function FormField({
             {error}
             {expandedSuggestions && (
               <span className="mt-1 block text-xs">
-                Sugerencia: verifica el formato y vuelve a intentar.
+                {t('errorSuggestion')}
               </span>
             )}
           </span>

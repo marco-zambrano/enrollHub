@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Download } from 'lucide-react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Button } from '@/components/ui/button'
@@ -7,49 +8,50 @@ import { exportEnrollmentsCSV } from '@/lib/reportExport'
 import { getScheduleById, getSubjectById } from '@/lib/enrollmentValidation'
 
 export function Reports() {
+  const { t } = useTranslation()
   const enrollments = useEnrollmentStore((s) => s.enrollments)
 
   useEffect(() => {
-    document.title = 'Reportes de matrículas — EnrollHub'
-  }, [])
+    document.title = t('reportsPageTitle')
+  }, [t])
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-10">
       <Breadcrumb
         items={[
-          { label: 'Panel', href: '/admin/dashboard' },
-          { label: 'Reportes' },
+          { label: t('panel'), href: '/admin/dashboard' },
+          { label: t('reports') },
         ]}
       />
 
       <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
         <h1 className="font-display text-2xl font-bold text-uni-navy">
-          Reportes de matrículas
+          {t('reportsTitle')}
         </h1>
         <Button
           onClick={() => exportEnrollmentsCSV(enrollments)}
-          aria-label="Exportar matrículas a CSV"
+          aria-label={t('exportCSVLabel')}
         >
           <Download className="mr-2 h-4 w-4" aria-hidden="true" />
-          Exportar CSV
+          {t('exportCSV')}
         </Button>
       </div>
 
       {enrollments.length === 0 ? (
         <p className="mt-8 text-uni-slate" role="status">
-          No hay matrículas registradas aún.
+          {t('noEnrollments')}
         </p>
       ) : (
         <div className="mt-8 overflow-x-auto">
           <table className="w-full min-w-[640px] text-sm">
-            <caption className="sr-only">Reporte de todas las matrículas</caption>
+            <caption className="sr-only">{t('reportsCaption')}</caption>
             <thead>
               <tr className="border-b border-uni-border bg-uni-gray">
-                <th scope="col" className="p-3 text-left">ID</th>
-                <th scope="col" className="p-3 text-left">Usuario</th>
-                <th scope="col" className="p-3 text-left">Materias</th>
-                <th scope="col" className="p-3 text-left">Créditos</th>
-                <th scope="col" className="p-3 text-left">Fecha</th>
+                <th scope="col" className="p-3 text-left">{t('thId')}</th>
+                <th scope="col" className="p-3 text-left">{t('thUser')}</th>
+                <th scope="col" className="p-3 text-left">{t('thSubjects')}</th>
+                <th scope="col" className="p-3 text-left">{t('thCredits')}</th>
+                <th scope="col" className="p-3 text-left">{t('thDate')}</th>
               </tr>
             </thead>
             <tbody>

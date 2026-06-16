@@ -26,7 +26,7 @@ export function Header() {
           <span className="font-display text-xl font-bold">{t('appName')}</span>
         </Link>
 
-        <nav aria-label="Navegación principal">
+        <nav aria-label={t('navLabel')}>
           <ul className="flex items-center gap-2">
             {user ? (
               <>

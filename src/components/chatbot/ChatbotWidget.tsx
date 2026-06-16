@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { MessageCircle, Send, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -15,13 +16,14 @@ interface Message {
 }
 
 export function ChatbotWidget() {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
   const [messages, setMessages] = useState<Message[]>([
     {
       id: 'welcome',
       role: 'bot',
-      text: '¡Hola! Soy tu asistente de matrícula. Puedo ayudarte con materias, prerrequisitos y el proceso de inscripción.',
+      text: t('chatbotWelcome'),
     },
   ])
   const [loading, setLoading] = useState(false)
@@ -63,7 +65,7 @@ export function ChatbotWidget() {
       <Button
         className="fixed right-4 bottom-20 z-[7000] h-12 w-12 rounded-full shadow-lg"
         size="icon"
-        aria-label="Abrir asistente de matrícula"
+        aria-label={t('chatbotOpen')}
         aria-expanded={open}
         aria-controls="chatbot-panel"
         onClick={() => setOpen(!open)}
@@ -76,19 +78,19 @@ export function ChatbotWidget() {
           ref={panelRef}
           id="chatbot-panel"
           role="dialog"
-          aria-label="Asistente de matrícula"
+          aria-label={t('chatbotLabel')}
           aria-modal="true"
           className="fixed right-4 bottom-36 z-[7001] flex h-[28rem] w-full max-w-sm flex-col rounded-lg border border-uni-border bg-white shadow-2xl"
         >
           <header className="flex items-center justify-between border-b border-uni-border px-4 py-3">
             <h2 className="font-display text-sm font-semibold text-uni-navy">
-              Asistente EnrollHub
+              {t('chatbotTitle')}
             </h2>
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setOpen(false)}
-              aria-label="Cerrar asistente"
+              aria-label={t('chatbotClose')}
             >
               <X className="h-4 w-4" aria-hidden="true" />
             </Button>
@@ -124,11 +126,11 @@ export function ChatbotWidget() {
             <Input
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Escribe tu pregunta..."
-              aria-label="Mensaje para el asistente"
+              placeholder={t('chatbotPlaceholder')}
+              aria-label={t('chatbotInputLabel')}
               disabled={loading}
             />
-            <Button type="submit" size="icon" aria-label="Enviar mensaje" disabled={loading}>
+            <Button type="submit" size="icon" aria-label={t('chatbotSend')} disabled={loading}>
               <Send className="h-4 w-4" aria-hidden="true" />
             </Button>
           </form>

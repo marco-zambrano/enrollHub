@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
@@ -30,22 +31,23 @@ const schema = z
 type RegisterForm = z.infer<typeof schema>
 
 export function Register() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const register = useAuthStore((s) => s.register)
 
   useEffect(() => {
-    document.title = 'Registro — EnrollHub'
-  }, [])
+    document.title = t('registerPageTitle')
+  }, [t])
 
   return (
     <div className="mx-auto max-w-md px-4 py-10">
-      <Breadcrumb items={[{ label: 'Inicio', href: '/' }, { label: 'Registro' }]} />
+      <Breadcrumb items={[{ label: t('home'), href: '/' }, { label: t('register') }]} />
 
       <h1 className="mt-6 font-display text-2xl font-bold text-uni-navy">
-        Registro de primer ingreso
+        {t('registerTitle')}
       </h1>
       <p className="mt-2 text-sm text-uni-slate">
-        Crea tu cuenta para acceder al proceso de matrícula.
+        {t('registerDesc')}
       </p>
 
       <AccessibleForm<RegisterForm>
@@ -58,16 +60,16 @@ export function Register() {
           careerId: '',
         }}
         resolver={zodResolver(schema)}
-        submitLabel="Crear cuenta de estudiante"
+        submitLabel={t('registerSubmit')}
         critical
-        confirmTitle="Confirmar registro"
+        confirmTitle={t('confirmRegTitle')}
         confirmSummary={(data) => (
           <p>
             Registrarás la cuenta <strong>{data.email}</strong> para la carrera seleccionada.
             ¿Deseas continuar?
           </p>
         )}
-        successMessage="Cuenta creada exitosamente."
+        successMessage={t('accountCreated')}
         onSubmit={async (data) => {
           const result = await register({
             email: data.email,
@@ -80,41 +82,41 @@ export function Register() {
         }}
       >
         <fieldset className="space-y-4">
-          <legend className="mb-2 text-sm font-medium text-uni-navy">Datos personales</legend>
+          <legend className="mb-2 text-sm font-medium text-uni-navy">{t('personalDataLegend')}</legend>
           <FormField
             name="name"
-            label="Nombre completo"
-            hint="Como aparece en tu documento de identidad"
+            label={t('nameLabel')}
+            hint={t('nameHint')}
             required
             autoComplete="name"
           />
           <FormField
             name="email"
-            label="Correo institucional"
+            label={t('emailLabel')}
             type="email"
-            hint="Será tu usuario de acceso al sistema"
+            hint={t('emailHint')}
             required
             autoComplete="email"
           />
           <FormField
             name="password"
-            label="Contraseña"
+            label={t('passwordLabel')}
             type="password"
-            hint="Mínimo 8 caracteres. Puedes usar un gestor de contraseñas."
+            hint={t('passwordMinHint')}
             required
             autoComplete="new-password"
           />
           <FormField
             name="confirmPassword"
-            label="Confirmar contraseña"
+            label={t('confirmPasswordLabel')}
             type="password"
             required
             autoComplete="new-password"
           />
           <SelectField
             name="careerId"
-            label="Carrera"
-            hint="Selecciona la carrera en la que te matricularás"
+            label={t('careerLabel')}
+            hint={t('careerHint')}
             required
             options={careers.map((c) => ({ value: c.id, label: c.name }))}
           />
@@ -122,9 +124,9 @@ export function Register() {
       </AccessibleForm>
 
       <p className="mt-6 text-center text-sm text-uni-slate">
-        ¿Ya tienes cuenta?{' '}
+        {t('hasAccount')}{' '}
         <Link to="/login" className="text-uni-blue underline-offset-2 hover:underline">
-          Inicia sesión
+          {t('signInHere')}
         </Link>
       </p>
     </div>

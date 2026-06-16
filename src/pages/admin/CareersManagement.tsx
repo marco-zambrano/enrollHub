@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useFormContext, Controller } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { AlertCircle, Pencil, Trash2, X } from 'lucide-react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { AccessibleForm } from '@/components/forms/AccessibleForm'
@@ -34,6 +35,7 @@ const subjectSchema = z.object({
 type SubjectForm = z.infer<typeof subjectSchema>
 
 function PrerequisitesCheckboxes() {
+  const { t } = useTranslation()
   const { subjects } = useAdminStore()
   const {
     control,
@@ -47,21 +49,21 @@ function PrerequisitesCheckboxes() {
 
   if (!careerId) {
     return (
-      <p className="text-xs text-uni-slate">Selecciona una carrera para ver las materias disponibles como prerrequisito.</p>
+      <p className="text-xs text-uni-slate">{t('prerequisitesHint')}</p>
     )
   }
 
   if (available.length === 0) {
     return (
-      <p className="text-xs text-uni-slate">No hay materias registradas para esta carrera.</p>
+      <p className="text-xs text-uni-slate">{t('noSubjectsForCareer')}</p>
     )
   }
 
   return (
     <fieldset className="space-y-2">
       <legend className="text-sm font-medium text-uni-navy">
-        Prerrequisitos
-        <span className="ml-1 text-xs font-normal text-uni-slate">(opcional)</span>
+        {t('prerequisitesLabel')}
+        <span className="ml-1 text-xs font-normal text-uni-slate">{t('prerequisitesOptional')}</span>
       </legend>
       <Controller
         name="prerequisites"
@@ -118,6 +120,7 @@ function EditCareerModal({
   onClose: () => void
   onSaved: () => void
 }) {
+  const { t } = useTranslation()
   const { updateCareer, careers } = useAdminStore()
 
   return (
@@ -130,9 +133,9 @@ function EditCareerModal({
       <div className="w-full max-w-md rounded-lg border border-uni-border bg-white p-6 shadow-xl">
         <div className="flex items-center justify-between">
           <h2 id="edit-career-title" className="font-display text-lg font-semibold text-uni-navy">
-            Editar carrera
+            {t('editCareer')}
           </h2>
-          <Button variant="ghost" size="sm" onClick={onClose} aria-label="Cerrar">
+          <Button variant="ghost" size="sm" onClick={onClose} aria-label={t('close')}>
             <X className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
@@ -140,8 +143,8 @@ function EditCareerModal({
           className="mt-4"
           defaultValues={{ name: career.name, totalCredits: career.totalCredits }}
           resolver={zodResolver(careerSchema)}
-          submitLabel="Guardar cambios"
-          successMessage="Carrera actualizada exitosamente."
+          submitLabel={t('saveChanges')}
+          successMessage={t('careerUpdated')}
           onSubmit={async (data) => {
             const duplicate = careers.find(
               (c) => c.name.toLowerCase() === data.name.toLowerCase() && c.id !== career.id,
@@ -154,18 +157,18 @@ function EditCareerModal({
           }}
         >
           <fieldset className="space-y-4">
-            <legend className="sr-only">Formulario de edición</legend>
+            <legend className="sr-only">{t('editFormLegend')}</legend>
             <FormField
               name="name"
-              label="Nombre de la carrera"
-              hint="Ej: Ingeniería en Sistemas"
+              label={t('careerNameLabel')}
+              hint={t('careerNameHint')}
               required
             />
             <FormField
               name="totalCredits"
-              label="Créditos totales"
+              label={t('totalCreditsLabel')}
               type="number"
-              hint="Número total de créditos que debe cursar el estudiante"
+              hint={t('totalCreditsHint')}
               required
             />
           </fieldset>
@@ -184,6 +187,7 @@ function EditSubjectModal({
   onClose: () => void
   onSaved: () => void
 }) {
+  const { t } = useTranslation()
   const { careers, subjects, updateSubject } = useAdminStore()
   const careerOptions = careers.map((c) => ({ value: c.id, label: c.name }))
 
@@ -197,9 +201,9 @@ function EditSubjectModal({
       <div className="w-full max-w-lg rounded-lg border border-uni-border bg-white p-6 shadow-xl">
         <div className="flex items-center justify-between">
           <h2 id="edit-subject-title" className="font-display text-lg font-semibold text-uni-navy">
-            Editar asignatura
+            {t('editSubject')}
           </h2>
-          <Button variant="ghost" size="sm" onClick={onClose} aria-label="Cerrar">
+          <Button variant="ghost" size="sm" onClick={onClose} aria-label={t('close')}>
             <X className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
@@ -213,8 +217,8 @@ function EditSubjectModal({
             prerequisites: subject.prerequisites,
           }}
           resolver={zodResolver(subjectSchema)}
-          submitLabel="Guardar cambios"
-          successMessage="Asignatura actualizada exitosamente."
+          submitLabel={t('saveChanges')}
+          successMessage={t('subjectUpdated')}
           onSubmit={async (data) => {
             const dupCode = subjects.find(
               (s) => s.code.toUpperCase() === data.code.toUpperCase() && s.id !== subject.id,
@@ -233,30 +237,30 @@ function EditSubjectModal({
           }}
         >
           <fieldset className="space-y-4">
-            <legend className="sr-only">Formulario de edición</legend>
+            <legend className="sr-only">{t('editFormLegend')}</legend>
             <SelectField
               name="careerId"
-              label="Carrera"
+              label={t('careerLabel')}
               options={careerOptions}
               required
             />
             <FormField
               name="code"
-              label="Código de la asignatura"
-              hint="Ej: MAT101"
+              label={t('subjectCodeLabel')}
+              hint={t('subjectCodeHint')}
               required
             />
             <FormField
               name="name"
-              label="Nombre de la asignatura"
-              hint="Ej: Matemáticas I"
+              label={t('subjectNameLabel')}
+              hint={t('subjectNameHint')}
               required
             />
             <FormField
               name="credits"
-              label="Créditos"
+              label={t('subjectCreditsLabel')}
               type="number"
-              hint="Número de créditos académicos"
+              hint={t('subjectCreditsHint')}
               required
             />
             <PrerequisitesCheckboxes />
@@ -278,6 +282,7 @@ function ConfirmDeleteDialog({
   onConfirm: () => void
   onCancel: () => void
 }) {
+  const { t } = useTranslation()
   return (
     <div
       role="alertdialog"
@@ -295,13 +300,13 @@ function ConfirmDeleteDialog({
         </p>
         <div className="mt-6 flex justify-end gap-3">
           <Button variant="outline" onClick={onCancel}>
-            Cancelar
+            {t('cancel')}
           </Button>
           <Button
             onClick={onConfirm}
             className="bg-uni-error text-white hover:bg-red-700"
           >
-            Eliminar
+            {t('delete')}
           </Button>
         </div>
       </div>
@@ -310,6 +315,7 @@ function ConfirmDeleteDialog({
 }
 
 export function CareersManagement() {
+  const { t } = useTranslation()
   const { careers, subjects, periods, addCareer, addSubject, removeCareer, removeSubject } =
     useAdminStore()
   const [careerFilter, setCareerFilter] = useState('')
@@ -323,8 +329,8 @@ export function CareersManagement() {
   const closeToast = useCallback(() => setToast(null), [])
 
   useEffect(() => {
-    document.title = 'Gestión académica — EnrollHub'
-  }, [])
+    document.title = t('careersManagementTitle')
+  }, [t])
 
   const filteredSubjects = careerFilter
     ? subjects.filter((s) => s.careerId === careerFilter)
@@ -336,13 +342,13 @@ export function CareersManagement() {
     <div className="mx-auto max-w-5xl px-4 py-10">
       <Breadcrumb
         items={[
-          { label: 'Panel', href: '/admin/dashboard' },
-          { label: 'Gestión académica' },
+          { label: t('panel'), href: '/admin/dashboard' },
+          { label: t('careersManagement') },
         ]}
       />
 
       <h1 className="mt-6 font-display text-2xl font-bold text-uni-navy">
-        Gestión de carreras, asignaturas y períodos
+        {t('careersManagementHeading')}
       </h1>
 
       <Toast
@@ -357,7 +363,7 @@ export function CareersManagement() {
           onClose={() => setEditingCareer(null)}
           onSaved={() => {
             setEditingCareer(null)
-            showToast('Carrera actualizada exitosamente.')
+            showToast(t('careerUpdated'))
           }}
         />
       )}
@@ -368,19 +374,19 @@ export function CareersManagement() {
           onClose={() => setEditingSubject(null)}
           onSaved={() => {
             setEditingSubject(null)
-            showToast('Asignatura actualizada exitosamente.')
+            showToast(t('subjectUpdated'))
           }}
         />
       )}
 
       {deletingCareer && (
         <ConfirmDeleteDialog
-          title="Eliminar carrera"
+          title={t('deleteConfirmTitle', { type: 'carrera' })}
           message={`¿Estás seguro de eliminar "${deletingCareer.name}"? También se eliminarán todas las asignaturas asociadas.`}
           onConfirm={() => {
             removeCareer(deletingCareer.id)
             setDeletingCareer(null)
-            showToast('Carrera eliminada exitosamente.')
+            showToast(t('careerDeleted'))
           }}
           onCancel={() => setDeletingCareer(null)}
         />
@@ -388,12 +394,12 @@ export function CareersManagement() {
 
       {deletingSubject && (
         <ConfirmDeleteDialog
-          title="Eliminar asignatura"
+          title={t('deleteConfirmTitle', { type: 'asignatura' })}
           message={`¿Estás seguro de eliminar "${deletingSubject.code} — ${deletingSubject.name}"?`}
           onConfirm={() => {
             removeSubject(deletingSubject.id)
             setDeletingSubject(null)
-            showToast('Asignatura eliminada exitosamente.')
+            showToast(t('subjectDeleted'))
           }}
           onCancel={() => setDeletingSubject(null)}
         />
@@ -402,16 +408,16 @@ export function CareersManagement() {
       <div className="mt-10 grid gap-10 lg:grid-cols-2">
         <section aria-labelledby="careers-list">
           <h2 id="careers-list" className="font-display text-lg font-semibold text-uni-navy">
-            Carreras ({careers.length})
+            {t('careersCount', { count: careers.length })}
           </h2>
           <div className="mt-4 max-h-72 overflow-auto rounded-lg border border-uni-border">
             <table className="w-full text-sm">
-              <caption className="sr-only">Listado de carreras</caption>
+              <caption className="sr-only">{t('careersCaption')}</caption>
               <thead>
                 <tr className="border-b border-uni-border bg-uni-gray">
-                  <th scope="col" className="p-2 text-left font-medium">Nombre</th>
-                  <th scope="col" className="p-2 text-left font-medium">Créditos</th>
-                  <th scope="col" className="p-2 text-right font-medium">Acciones</th>
+                  <th scope="col" className="p-2 text-left font-medium">{t('careerNameCol')}</th>
+                  <th scope="col" className="p-2 text-left font-medium">{t('thCredits')}</th>
+                  <th scope="col" className="p-2 text-right font-medium">{t('actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -425,7 +431,7 @@ export function CareersManagement() {
                           variant="ghost"
                           size="sm"
                           onClick={() => setEditingCareer(c)}
-                          aria-label={`Editar ${c.name}`}
+                          aria-label={`${t('edit')} ${c.name}`}
                         >
                           <Pencil className="h-4 w-4" aria-hidden="true" />
                         </Button>
@@ -433,7 +439,7 @@ export function CareersManagement() {
                           variant="ghost"
                           size="sm"
                           onClick={() => setDeletingCareer(c)}
-                          aria-label={`Eliminar ${c.name}`}
+                          aria-label={`${t('delete')} ${c.name}`}
                           className="text-uni-error hover:bg-red-50"
                         >
                           <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -445,7 +451,7 @@ export function CareersManagement() {
                 {careers.length === 0 && (
                   <tr>
                     <td colSpan={3} className="p-4 text-center text-sm text-uni-slate">
-                      No hay carreras registradas.
+                      {t('noCareers')}
                     </td>
                   </tr>
                 )}
@@ -457,8 +463,8 @@ export function CareersManagement() {
             <AccessibleForm<CareerForm>
               defaultValues={{ name: '', totalCredits: 150 }}
               resolver={zodResolver(careerSchema)}
-              submitLabel="Agregar nueva carrera"
-              successMessage="Carrera agregada exitosamente."
+              submitLabel={t('addCareer')}
+              successMessage={t('careerCreated')}
               onSubmit={async (data) => {
                 const duplicate = careers.find(
                   (c) => c.name.toLowerCase() === data.name.toLowerCase(),
@@ -467,24 +473,24 @@ export function CareersManagement() {
                   throw new Error(`Ya existe una carrera llamada "${data.name}". No se puede añadir una carrera duplicada.`)
                 }
                 addCareer({ name: data.name, totalCredits: data.totalCredits })
-                showToast('Carrera creada exitosamente.')
+                showToast(t('careerCreated'))
               }}
             >
               <fieldset className="space-y-4 rounded-lg border border-uni-border bg-white p-4">
                 <legend className="font-display text-base font-semibold text-uni-navy">
-                  Agregar carrera
+                  {t('addCareerLegend')}
                 </legend>
                 <FormField
                   name="name"
-                  label="Nombre de la carrera"
-                  hint="Ej: Ingeniería en Sistemas"
+                  label={t('careerNameLabel')}
+                  hint={t('careerNameHint')}
                   required
                 />
                 <FormField
                   name="totalCredits"
-                  label="Créditos totales"
+                  label={t('totalCreditsLabel')}
                   type="number"
-                  hint="Número total de créditos que debe cursar el estudiante"
+                  hint={t('totalCreditsHint')}
                   required
                 />
               </fieldset>
@@ -494,19 +500,19 @@ export function CareersManagement() {
 
         <section aria-labelledby="subjects-list">
           <h2 id="subjects-list" className="font-display text-lg font-semibold text-uni-navy">
-            Asignaturas ({filteredSubjects.length})
+            {t('subjectsCount', { count: filteredSubjects.length })}
           </h2>
 
           <div className="mt-4 flex items-center gap-3">
-            <Label htmlFor="career-filter">Filtrar por carrera</Label>
+            <Label htmlFor="career-filter">{t('filterByCareer')}</Label>
             <select
               id="career-filter"
               value={careerFilter}
               onChange={(e) => setCareerFilter(e.target.value)}
               className="flex-1 rounded-md border border-uni-border bg-white p-2 text-sm text-uni-navy"
-              aria-label="Filtrar asignaturas por carrera"
+              aria-label={t('filterLabel')}
             >
-              <option value="">Todas las carreras</option>
+              <option value="">{t('allCareers')}</option>
               {careers.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name}
@@ -517,14 +523,14 @@ export function CareersManagement() {
 
           <div className="mt-4 max-h-80 overflow-auto rounded-lg border border-uni-border">
             <table className="w-full text-sm">
-              <caption className="sr-only">Listado de asignaturas</caption>
+              <caption className="sr-only">{t('subjectsCaption')}</caption>
               <thead>
                 <tr className="border-b border-uni-border bg-uni-gray">
-                  <th scope="col" className="p-2 text-left font-medium">Código</th>
-                  <th scope="col" className="p-2 text-left font-medium">Nombre</th>
-                  <th scope="col" className="p-2 text-left font-medium">Carrera</th>
-                  <th scope="col" className="p-2 text-right font-medium">Cr.</th>
-                  <th scope="col" className="p-2 text-right font-medium">Acciones</th>
+                  <th scope="col" className="p-2 text-left font-medium">{t('thCode')}</th>
+                  <th scope="col" className="p-2 text-left font-medium">{t('careerNameCol')}</th>
+                  <th scope="col" className="p-2 text-left font-medium">{t('subjectCareerCol')}</th>
+                  <th scope="col" className="p-2 text-right font-medium">{t('thCredits')}</th>
+                  <th scope="col" className="p-2 text-right font-medium">{t('actions')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -542,7 +548,7 @@ export function CareersManagement() {
                             variant="ghost"
                             size="sm"
                             onClick={() => setEditingSubject(s)}
-                            aria-label={`Editar ${s.name}`}
+                            aria-label={`${t('edit')} ${s.name}`}
                           >
                             <Pencil className="h-4 w-4" aria-hidden="true" />
                           </Button>
@@ -550,7 +556,7 @@ export function CareersManagement() {
                             variant="ghost"
                             size="sm"
                             onClick={() => setDeletingSubject(s)}
-                            aria-label={`Eliminar ${s.name}`}
+                            aria-label={`${t('delete')} ${s.name}`}
                             className="text-uni-error hover:bg-red-50"
                           >
                             <Trash2 className="h-4 w-4" aria-hidden="true" />
@@ -563,7 +569,7 @@ export function CareersManagement() {
                 {filteredSubjects.length === 0 && (
                   <tr>
                     <td colSpan={5} className="p-4 text-center text-sm text-uni-slate">
-                      No hay asignaturas{careerFilter ? ' para esta carrera' : ''}.
+                      {careerFilter ? t('noSubjectsFiltered') : t('noSubjects')}
                     </td>
                   </tr>
                 )}
@@ -575,14 +581,14 @@ export function CareersManagement() {
             <AccessibleForm<SubjectForm>
               defaultValues={{ careerId: '', code: '', name: '', credits: 4, prerequisites: [] }}
               resolver={zodResolver(subjectSchema)}
-              submitLabel="Agregar asignatura"
-              successMessage="Asignatura agregada exitosamente."
+              submitLabel={t('addSubject')}
+              successMessage={t('subjectCreated')}
               onSubmit={async (data) => {
                 const dupCode = subjects.find(
                   (s) => s.code.toUpperCase() === data.code.toUpperCase(),
                 )
                 if (dupCode) {
-              throw new Error(`Ya existe una asignatura con el código "${data.code}". No se puede añadir una asignatura duplicada.`)
+                  throw new Error(`Ya existe una asignatura con el código "${data.code}". No se puede añadir una asignatura duplicada.`)
                 }
                 addSubject({
                   careerId: data.careerId,
@@ -591,37 +597,36 @@ export function CareersManagement() {
                   credits: data.credits,
                   prerequisites: data.prerequisites,
                 })
-                showToast('Asignatura creada exitosamente.')
+                showToast(t('subjectCreated'))
               }}
             >
               <fieldset className="space-y-4 rounded-lg border border-uni-border bg-white p-4">
                 <legend className="font-display text-base font-semibold text-uni-navy">
-                  Agregar asignatura
+                  {t('addSubjectLegend')}
                 </legend>
                 <SelectField
                   name="careerId"
-                  label="Carrera"
-                  hint="Selecciona la carrera a la que pertenece la asignatura"
+                  label={t('careerLabel')}
                   options={careerOptions}
                   required
                 />
                 <FormField
                   name="code"
-                  label="Código de la asignatura"
-                  hint="Ej: MAT101"
+                  label={t('subjectCodeLabel')}
+                  hint={t('subjectCodeHint')}
                   required
                 />
                 <FormField
                   name="name"
-                  label="Nombre de la asignatura"
-                  hint="Ej: Matemáticas I"
+                  label={t('subjectNameLabel')}
+                  hint={t('subjectNameHint')}
                   required
                 />
                 <FormField
                   name="credits"
-                  label="Créditos"
+                  label={t('subjectCreditsLabel')}
                   type="number"
-                  hint="Número de créditos académicos"
+                  hint={t('subjectCreditsHint')}
                   required
                 />
                 <PrerequisitesCheckboxes />
@@ -633,7 +638,7 @@ export function CareersManagement() {
 
       <section className="mt-10" aria-labelledby="periods-list">
         <h2 id="periods-list" className="font-display text-lg font-semibold text-uni-navy">
-          Períodos académicos
+          {t('periodsTitle')}
         </h2>
         <ul className="mt-4 space-y-2 text-sm">
           {periods.map((p) => (
@@ -648,12 +653,12 @@ export function CareersManagement() {
                 </div>
                 {p.active && (
                   <span className="rounded bg-uni-blue px-2.5 py-0.5 text-xs font-medium text-white">
-                    Activo
+                    {t('periodActive')}
                   </span>
                 )}
               </div>
               <p className="mt-1 text-xs text-uni-slate">
-                Matrícula: {p.enrollmentStart} – {p.enrollmentEnd}
+                {t('periodEnrollment', { start: p.enrollmentStart, end: p.enrollmentEnd })}
               </p>
             </li>
           ))}

@@ -1,4 +1,5 @@
 import { useEffect, type ReactNode } from 'react'
+import { useTranslation } from 'react-i18next'
 import { CheckCircle2, X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
@@ -11,6 +12,8 @@ interface ToastProps {
 }
 
 export function Toast({ open, message, onClose, duration = 4000, icon }: ToastProps) {
+  const { t } = useTranslation()
+
   useEffect(() => {
     if (!open) return
     const timer = setTimeout(onClose, duration)
@@ -32,7 +35,7 @@ export function Toast({ open, message, onClose, duration = 4000, icon }: ToastPr
           variant="ghost"
           size="sm"
           onClick={onClose}
-          aria-label="Cerrar notificación"
+          aria-label={t('toastClose')}
           className="ml-2 h-6 w-6 p-0"
         >
           <X className="h-4 w-4" aria-hidden="true" />

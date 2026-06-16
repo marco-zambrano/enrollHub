@@ -7,6 +7,7 @@ import {
   type Resolver,
   type SubmitHandler,
 } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useAccessibilityStore } from '@/stores/accessibilityStore'
 import { Button } from '@/components/ui/button'
 
@@ -29,12 +30,13 @@ export function AccessibleForm<T extends FieldValues>({
   children,
   submitLabel,
   critical = false,
-  confirmTitle = 'Confirmar envío',
+  confirmTitle,
   confirmSummary,
   successMessage,
   className,
   ...formProps
 }: AccessibleFormProps<T>) {
+  const { t } = useTranslation()
   const methods = useForm<T>({ defaultValues, resolver })
   const confirmationMode = useAccessibilityStore((s) => s.confirmationMode)
   const addLiveMessage = useAccessibilityStore((s) => s.addLiveRegionMessage)
@@ -62,7 +64,7 @@ export function AccessibleForm<T extends FieldValues>({
       }
     } catch (err) {
       setStatus('error')
-      const msg = err instanceof Error ? err.message : 'Error al enviar el formulario. Revisa los campos e intenta de nuevo.'
+      const msg = err instanceof Error ? err.message : t('formErrorGeneric')
       setErrorMessage(msg)
       addLiveMessage(msg)
     }
@@ -86,7 +88,7 @@ export function AccessibleForm<T extends FieldValues>({
 
         {status === 'error' && (
           <p role="alert" className="mt-4 text-sm text-uni-error">
-            {errorMessage ?? 'No se pudo completar el envío. Corrige los errores indicados e intenta nuevamente.'}
+            {errorMessage ?? t('formErrorRetry')}
           </p>
         )}
 
@@ -104,11 +106,11 @@ export function AccessibleForm<T extends FieldValues>({
         >
           <div className="w-full max-w-md rounded-lg border border-uni-border bg-white p-6 shadow-xl">
             <h2 id="confirm-dialog-title" className="font-display text-lg font-semibold text-uni-navy">
-              {confirmTitle}
+              {confirmTitle ?? t('confirmSubmitTitle')}
             </h2>
             <div className="mt-4 text-sm text-uni-slate">
               {confirmSummary ? confirmSummary(pendingData) : (
-                <p>¿Confirmas que deseas enviar esta información?</p>
+                <p>{t('confirmSubmitDefault')}</p>
               )}
             </div>
             <div className="mt-6 flex gap-3">
@@ -120,7 +122,7 @@ export function AccessibleForm<T extends FieldValues>({
                   setPendingData(null)
                 }}
               >
-                Cancelar
+                {t('cancel')}
               </Button>
               <Button
                 type="button"
@@ -130,7 +132,7 @@ export function AccessibleForm<T extends FieldValues>({
                   setPendingData(null)
                 }}
               >
-                Confirmar
+                {t('confirm')}
               </Button>
             </div>
           </div>

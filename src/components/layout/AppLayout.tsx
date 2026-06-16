@@ -1,10 +1,13 @@
 import { Outlet } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { SkipLink } from './SkipLink'
 import { Header } from './Header'
 import { AccessibilityMenu } from '@/components/accessibility/AccessibilityMenu'
 import { ChatbotWidget } from '@/components/chatbot/ChatbotWidget'
 
 export function AppLayout() {
+  const { t } = useTranslation()
+
   return (
     <>
       <SkipLink />
@@ -15,7 +18,7 @@ export function AppLayout() {
         </main>
         <footer className="border-t border-uni-border bg-uni-gray px-4 py-6 text-center text-sm text-uni-slate">
           <p>
-            EnrollHub &copy; {new Date().getFullYear()} — Plataforma accesible WCAG 2.2 AA
+            {t('footerText', { year: new Date().getFullYear() })}
           </p>
         </footer>
       </div>

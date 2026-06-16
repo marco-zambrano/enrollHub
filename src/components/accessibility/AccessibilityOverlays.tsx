@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useAccessibilityStore } from '@/stores/accessibilityStore'
 
 export function FocusMonitor() {
+  const { t } = useTranslation()
   const active = useAccessibilityStore((s) => s.focusMonitor)
   const [focused, setFocused] = useState('')
 
@@ -33,8 +35,8 @@ export function FocusMonitor() {
       aria-live="polite"
       className="fixed bottom-20 left-4 z-[9000] max-w-xs rounded-md border border-uni-border bg-white p-3 text-sm shadow-lg"
     >
-      <p className="font-semibold text-uni-navy">Foco activo</p>
-      <p className="mt-1 break-words text-uni-slate">{focused || 'Ninguno'}</p>
+      <p className="font-semibold text-uni-navy">{t('a11yFocusActive')}</p>
+      <p className="mt-1 break-words text-uni-slate">{focused || t('a11yFocusNone')}</p>
     </div>
   )
 }
@@ -87,6 +89,7 @@ export function TabOrderOverlay() {
 }
 
 export function HeadingTreePanel() {
+  const { t } = useTranslation()
   const visible = useAccessibilityStore((s) => s.headingTreeVisible)
   const [headings, setHeadings] = useState<Array<{ level: number; text: string }>>([])
 
@@ -106,9 +109,9 @@ export function HeadingTreePanel() {
   return (
     <aside
       className="fixed bottom-20 right-80 z-[9000] max-h-64 w-72 overflow-auto rounded-md border border-uni-border bg-white p-3 shadow-lg"
-      aria-label="Árbol de encabezados"
+      aria-label={t('a11yHeadingTreeTitle')}
     >
-      <h2 className="text-sm font-semibold text-uni-navy">Encabezados de la página</h2>
+      <h2 className="text-sm font-semibold text-uni-navy">{t('a11yHeadingTreeTitle')}</h2>
       <ul className="mt-2 space-y-1 text-sm">
         {headings.map((h, i) => (
           <li key={i} style={{ paddingLeft: `${(h.level - 1) * 12}px` }}>
@@ -152,6 +155,7 @@ export function AriaRolesOverlay() {
 }
 
 export function LiveRegionLogPanel() {
+  const { t } = useTranslation()
   const visible = useAccessibilityStore((s) => s.liveRegionLogVisible)
   const log = useAccessibilityStore((s) => s.liveRegionLog)
 
@@ -160,12 +164,12 @@ export function LiveRegionLogPanel() {
   return (
     <aside
       className="fixed bottom-20 left-4 z-[9000] max-h-48 w-80 overflow-auto rounded-md border border-uni-border bg-white p-3 shadow-lg"
-      aria-label="Historial de mensajes aria-live"
+      aria-label={t('a11yLiveLogTitle')}
     >
-      <h2 className="text-sm font-semibold text-uni-navy">Log aria-live</h2>
+      <h2 className="text-sm font-semibold text-uni-navy">{t('a11yLiveLogTitle')}</h2>
       <ul className="mt-2 space-y-1 text-xs text-uni-slate" role="log" aria-live="polite">
         {log.length === 0 ? (
-          <li>Sin mensajes aún</li>
+          <li>{t('a11yLiveLogEmpty')}</li>
         ) : (
           log.map((msg, i) => <li key={i}>{msg}</li>)
         )}
@@ -175,6 +179,7 @@ export function LiveRegionLogPanel() {
 }
 
 export function KeyboardModeIndicator() {
+  const { t } = useTranslation()
   const active = useAccessibilityStore((s) => s.keyboardModeIndicator)
   const [keyboard, setKeyboard] = useState(false)
 
@@ -200,7 +205,7 @@ export function KeyboardModeIndicator() {
       role="status"
       aria-live="polite"
     >
-      Modo teclado activo
+      {t('a11yKeyboardMode')}
     </div>
   )
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 import { AlertCircle, CheckCircle2 } from 'lucide-react'
 import { Breadcrumb } from '@/components/layout/Breadcrumb'
 import { Button } from '@/components/ui/button'
@@ -15,9 +16,8 @@ import {
   validateEnrollmentSelection,
 } from '@/lib/enrollmentValidation'
 
-const STEPS = ['Elegibilidad', 'Selección', 'Validación', 'Confirmación']
-
 export function EnrollmentWizard() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const user = useAuthStore((s) => s.user)
   const { selectedScheduleIds, toggleSchedule, confirmEnrollment } = useEnrollmentStore()
@@ -27,12 +27,19 @@ export function EnrollmentWizard() {
   const [showConfirm, setShowConfirm] = useState(false)
   const { showWarning, remaining, extendSession, sessionExtension } = useSessionTimeout()
 
+  const STEPS = [
+    t('stepEligibility'),
+    t('stepSelection'),
+    t('stepValidation'),
+    t('stepConfirmation'),
+  ]
+
   const eligible = getEligibleSubjects(user)
   const validation = validateEnrollmentSelection(selectedScheduleIds, user)
 
   useEffect(() => {
-    document.title = 'Proceso de matrícula — EnrollHub'
-  }, [])
+    document.title = t('enrollmentWizardTitle')
+  }, [t])
 
   const handleConfirm = () => {
     if (confirmationMode) {
@@ -46,7 +53,7 @@ export function EnrollmentWizard() {
     if (!user || !validation.valid) return
     const record = confirmEnrollment(user.id)
     if (record) {
-      addLiveMessage('Matrícula confirmada exitosamente.')
+      addLiveMessage(t('enrollmentConfirmed'))
       navigate(`/student/receipt/${record.id}`)
     }
   }
@@ -55,16 +62,16 @@ export function EnrollmentWizard() {
     <div className="mx-auto max-w-3xl px-4 py-10">
       <Breadcrumb
         items={[
-          { label: 'Panel', href: '/student/dashboard' },
-          { label: 'Matrícula' },
+          { label: t('panel'), href: '/student/dashboard' },
+          { label: t('enrollmentWizard') },
         ]}
       />
 
       <h1 className="mt-6 font-display text-2xl font-bold text-uni-navy">
-        Proceso de matrícula
+        {t('enrollmentWizard')}
       </h1>
 
-      <ol className="mt-6 flex gap-2" aria-label="Pasos de matrícula">
+      <ol className="mt-6 flex gap-2" aria-label={t('enrollmentSteps')}>
         {STEPS.map((label, i) => (
           <li
             key={label}
@@ -85,10 +92,10 @@ export function EnrollmentWizard() {
       {showWarning && !sessionExtension && (
         <div role="alert" className="mt-6 rounded-lg border border-uni-warning bg-amber-50 p-4">
           <p className="font-medium text-uni-navy">
-            Tu sesión expirará en {Math.ceil(remaining / 1000)} segundos
+            {t('sessionExpiry', { seconds: Math.ceil(remaining / 1000) })}
           </p>
           <Button className="mt-2" size="sm" onClick={extendSession}>
-            Extender sesión
+            {t('extendSession')}
           </Button>
         </div>
       )}
@@ -96,13 +103,13 @@ export function EnrollmentWizard() {
       {step === 0 && (
         <section className="mt-8" aria-labelledby="step-eligibility">
           <h2 id="step-eligibility" className="font-display text-lg font-semibold text-uni-navy">
-            Validación previa
+            {t('preValidation')}
           </h2>
           <p className="mt-2 text-sm text-uni-slate">
-            Tienes {eligible.length} materia(s) elegibles para matricular en este período.
+            {t('eligibleCount', { count: eligible.length })}
           </p>
           <Button className="mt-6" onClick={() => setStep(1)}>
-            Continuar a selección
+            {t('continueToSelection')}
           </Button>
         </section>
       )}
@@ -110,16 +117,16 @@ export function EnrollmentWizard() {
       {step === 1 && (
         <section className="mt-8" aria-labelledby="step-selection">
           <h2 id="step-selection" className="font-display text-lg font-semibold text-uni-navy">
-            Selecciona materias y horarios
+            {t('selectSubjects')}
           </h2>
           <fieldset className="mt-4 space-y-4">
             <legend className="text-sm font-medium text-uni-navy">
-              Paralelos disponibles
+              {t('availableParallels')}
             </legend>
             {eligible.map((subject) => (
               <div key={subject.id} className="rounded-lg border border-uni-border p-4">
                 <p className="font-medium text-uni-navy">
-                  {subject.code} — {subject.name} ({subject.credits} cr.)
+                  {subject.code} — {subject.name} ({subject.credits} {t('credits')})
                 </p>
                 <ul className="mt-3 space-y-2">
                   {getSchedulesForSubject(subject.id).map((sch) => {
@@ -139,7 +146,7 @@ export function EnrollmentWizard() {
                             Paralelo {sch.parallel}: {sch.day} {sch.startTime}–{sch.endTime} —{' '}
                             {sch.professor}
                             {full && (
-                              <span className="ml-2 text-uni-error">(Cupo agotado)</span>
+                              <span className="ml-2 text-uni-error">({t('slotFull')})</span>
                             )}
                           </span>
                         </label>
@@ -151,9 +158,9 @@ export function EnrollmentWizard() {
             ))}
           </fieldset>
           <div className="mt-6 flex gap-3">
-            <Button variant="outline" onClick={() => setStep(0)}>Anterior</Button>
+            <Button variant="outline" onClick={() => setStep(0)}>{t('previous')}</Button>
             <Button onClick={() => setStep(2)} disabled={selectedScheduleIds.length === 0}>
-              Validar selección
+              {t('validateSelection')}
             </Button>
           </div>
         </section>
@@ -162,12 +169,12 @@ export function EnrollmentWizard() {
       {step === 2 && (
         <section className="mt-8" aria-labelledby="step-validation">
           <h2 id="step-validation" className="font-display text-lg font-semibold text-uni-navy">
-            Resultado de validación
+            {t('validationResult')}
           </h2>
           {validation.valid ? (
             <div className="mt-4 flex items-start gap-2 text-uni-success" role="status">
               <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
-              <p>Tu selección es válida. No hay choques de horario ni prerrequisitos pendientes.</p>
+              <p>{t('validationOk')}</p>
             </div>
           ) : (
             <ul className="mt-4 space-y-2" role="alert">
@@ -180,9 +187,9 @@ export function EnrollmentWizard() {
             </ul>
           )}
           <div className="mt-6 flex gap-3">
-            <Button variant="outline" onClick={() => setStep(1)}>Corregir selección</Button>
+            <Button variant="outline" onClick={() => setStep(1)}>{t('correctSelection')}</Button>
             <Button onClick={() => setStep(3)} disabled={!validation.valid}>
-              Ir a confirmación
+              {t('goToConfirmation')}
             </Button>
           </div>
         </section>
@@ -191,15 +198,15 @@ export function EnrollmentWizard() {
       {step === 3 && (
         <section className="mt-8" aria-labelledby="step-confirm">
           <h2 id="step-confirm" className="font-display text-lg font-semibold text-uni-navy">
-            Resumen de matrícula
+            {t('enrollmentSummary')}
           </h2>
           <table className="mt-4 w-full text-sm">
-            <caption className="sr-only">Materias seleccionadas para matrícula</caption>
+            <caption className="sr-only">{t('selectedCaption')}</caption>
             <thead>
               <tr className="border-b border-uni-border">
-                <th scope="col" className="p-2 text-left">Materia</th>
-                <th scope="col" className="p-2 text-left">Horario</th>
-                <th scope="col" className="p-2 text-left">Créditos</th>
+                <th scope="col" className="p-2 text-left">{t('thSubject')}</th>
+                <th scope="col" className="p-2 text-left">{t('thSchedule')}</th>
+                <th scope="col" className="p-2 text-left">{t('thCredits')}</th>
               </tr>
             </thead>
             <tbody>
@@ -219,8 +226,8 @@ export function EnrollmentWizard() {
             </tbody>
           </table>
           <div className="mt-6 flex gap-3">
-            <Button variant="outline" onClick={() => setStep(2)}>Anterior</Button>
-            <Button onClick={handleConfirm}>Confirmar matrícula</Button>
+            <Button variant="outline" onClick={() => setStep(2)}>{t('previous')}</Button>
+            <Button onClick={handleConfirm}>{t('confirmEnrollment')}</Button>
           </div>
         </section>
       )}
@@ -234,15 +241,14 @@ export function EnrollmentWizard() {
         >
           <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-xl">
             <h2 id="enroll-confirm-title" className="font-display text-lg font-semibold">
-              ¿Confirmar matrícula?
+              {t('confirmEnrollTitle')}
             </h2>
             <p className="mt-2 text-sm text-uni-slate">
-              Estás a punto de confirmar {selectedScheduleIds.length} materia(s). Esta acción
-              registrará tu matrícula para el período 2026-1.
+              {t('confirmEnrollDesc', { count: selectedScheduleIds.length })}
             </p>
             <div className="mt-6 flex gap-3">
               <Button variant="outline" onClick={() => setShowConfirm(false)}>
-                Cancelar
+                {t('cancel')}
               </Button>
               <Button
                 onClick={() => {
@@ -250,7 +256,7 @@ export function EnrollmentWizard() {
                   finalize()
                 }}
               >
-                Sí, confirmar matrícula
+                {t('yesConfirmEnroll')}
               </Button>
             </div>
           </div>
