@@ -8,7 +8,7 @@ import { AccessibleForm } from '@/components/forms/AccessibleForm'
 import { FormField } from '@/components/forms/FormField'
 import { SelectField } from '@/components/forms/SelectField'
 import { useAuthStore } from '@/stores/authStore'
-import careers from '@/data/mock/careers.json'
+import { useAdminStore } from '@/stores/adminStore'
 
 const schema = z
   .object({
@@ -34,6 +34,7 @@ export function Register() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const register = useAuthStore((s) => s.register)
+  const careers = useAdminStore((s) => s.careers)
 
   useEffect(() => {
     document.title = t('registerPageTitle')
