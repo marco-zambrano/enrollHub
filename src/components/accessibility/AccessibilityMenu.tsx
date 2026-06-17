@@ -6,10 +6,15 @@ import { useAccessibility } from '@/hooks/useAccessibility'
 import { useFocusTrap } from '@/hooks/useFocusTrap'
 import {
   AriaRolesOverlay,
+  AccessibleNameCheckPanel,
   FocusMonitor,
   HeadingTreePanel,
+  ImageDescriptionsOverlay,
   KeyboardModeIndicator,
   LiveRegionLogPanel,
+  NoAutoContextChangeNotice,
+  ReadAloudController,
+  ReadingOrderOverlay,
   TabOrderOverlay,
 } from './AccessibilityOverlays'
 import type { ColorblindMode, FocusStyle } from '@/stores/accessibilityStore'
@@ -83,6 +88,7 @@ export function AccessibilityMenu() {
     fontScale,
     colorblindMode,
     imageDescriptions,
+    readAloud,
     showHeadings,
     readingOrderVisible,
     keyboardModeIndicator,
@@ -160,6 +166,13 @@ export function AccessibilityMenu() {
                   description={t('a11yImageDescHint')}
                   checked={imageDescriptions}
                   onChange={(v) => setPreference('imageDescriptions', v)}
+                />
+                <ToggleRow
+                  id="a11y-read-aloud"
+                  label={t('a11yReadAloud')}
+                  description={t('a11yReadAloudHint')}
+                  checked={readAloud}
+                  onChange={(v) => setPreference('readAloud', v)}
                 />
                 <ToggleRow
                   id="a11y-headings"
@@ -380,11 +393,16 @@ export function AccessibilityMenu() {
       )}
 
       <FocusMonitor />
+      <ReadAloudController />
+      <ImageDescriptionsOverlay />
+      <ReadingOrderOverlay />
       <TabOrderOverlay />
       <HeadingTreePanel />
+      <AccessibleNameCheckPanel />
       <AriaRolesOverlay />
       <LiveRegionLogPanel />
       <KeyboardModeIndicator />
+      <NoAutoContextChangeNotice />
     </>
   )
 }

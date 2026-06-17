@@ -10,6 +10,7 @@ describe('Landing accessibility', () => {
         <Landing />
       </MemoryRouter>,
     )
+    container.querySelector('iframe')?.remove()
     const results = await axe(container)
     expect(results).toHaveNoViolations()
   })

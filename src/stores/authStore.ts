@@ -80,8 +80,18 @@ export const useAuthStore = create<AuthState>()(
             error: 'Credenciales incorrectas. Verifica tu correo y contraseña institucional.',
           }
         }
-        const { password: _, ...user } = found
-        set({ user })
+        set({
+          user: {
+            id: found.id,
+            email: found.email,
+            name: found.name,
+            role: found.role,
+            studentType: found.studentType,
+            careerId: found.careerId,
+            completedCredits: found.completedCredits,
+            approvedSubjects: found.approvedSubjects,
+          },
+        })
         return { success: true }
       },
 

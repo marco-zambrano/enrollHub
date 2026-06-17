@@ -12,6 +12,7 @@ export function useAccessibility() {
   const prefs = useAccessibilityStore(
     useShallow((s) => ({
       imageDescriptions: s.imageDescriptions,
+      readAloud: s.readAloud,
       showHeadings: s.showHeadings,
       readingOrderVisible: s.readingOrderVisible,
       colorblindMode: s.colorblindMode,

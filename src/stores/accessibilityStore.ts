@@ -7,6 +7,7 @@ export type FocusStyle = 'default' | 'thick' | 'yellow' | 'green'
 export interface AccessibilityPreferences {
   // Perceptible
   imageDescriptions: boolean
+  readAloud: boolean
   showHeadings: boolean
   readingOrderVisible: boolean
   colorblindMode: ColorblindMode
@@ -55,6 +56,7 @@ interface AccessibilityState extends AccessibilityPreferences {
 
 const defaults: AccessibilityPreferences = {
   imageDescriptions: false,
+  readAloud: false,
   showHeadings: false,
   readingOrderVisible: false,
   colorblindMode: 'none',
@@ -79,6 +81,14 @@ const defaults: AccessibilityPreferences = {
   ariaRolesVisible: false,
   liveRegionLogVisible: false,
   menuOpen: false,
+}
+
+function setBooleanAttribute(element: HTMLElement, name: string, value: boolean) {
+  if (value) {
+    element.setAttribute(name, 'true')
+  } else {
+    element.removeAttribute(name)
+  }
 }
 
 export const useAccessibilityStore = create<AccessibilityState>()(
@@ -108,14 +118,19 @@ export const useAccessibilityStore = create<AccessibilityState>()(
         html.lang = s.language
         html.style.setProperty('--font-scale', String(s.fontScale / 100))
 
-        html.toggleAttribute('data-high-contrast', s.highContrast)
-        html.toggleAttribute('data-highlight-links', s.highlightLinks)
-        html.toggleAttribute('data-reduce-motion', s.reduceMotion)
-        html.toggleAttribute('data-show-errors', s.showErrors)
-        html.toggleAttribute('data-show-hints', s.showHints)
-        html.toggleAttribute('data-show-headings', s.showHeadings)
-        html.toggleAttribute('data-keyboard-mode', s.keyboardModeIndicator)
-        html.toggleAttribute('data-image-descriptions', s.imageDescriptions)
+        setBooleanAttribute(html, 'data-high-contrast', s.highContrast)
+        setBooleanAttribute(html, 'data-highlight-links', s.highlightLinks)
+        setBooleanAttribute(html, 'data-reduce-motion', s.reduceMotion)
+        setBooleanAttribute(html, 'data-show-errors', s.showErrors)
+        setBooleanAttribute(html, 'data-show-hints', s.showHints)
+        setBooleanAttribute(html, 'data-show-headings', s.showHeadings)
+        setBooleanAttribute(html, 'data-keyboard-mode', s.keyboardModeIndicator)
+        setBooleanAttribute(html, 'data-image-descriptions', s.imageDescriptions)
+        setBooleanAttribute(html, 'data-read-aloud', s.readAloud)
+        setBooleanAttribute(html, 'data-tab-order', s.tabOrderVisible)
+        setBooleanAttribute(html, 'data-reading-order', s.readingOrderVisible)
+        setBooleanAttribute(html, 'data-accessible-name-check', s.accessibleNameCheck)
+        setBooleanAttribute(html, 'data-no-auto-context-change', s.noAutoContextChange)
 
         if (s.colorblindMode === 'none') {
           html.removeAttribute('data-colorblind')
@@ -133,17 +148,18 @@ export const useAccessibilityStore = create<AccessibilityState>()(
     {
       name: 'enrollhub-a11y-prefs',
       partialize: (state) => {
-        const {
-          menuOpen: _menuOpen,
-          liveRegionLog: _liveRegionLog,
-          setPreference: _setPreference,
-          toggleMenu: _toggleMenu,
-          setMenuOpen: _setMenuOpen,
-          addLiveRegionMessage: _addLiveRegionMessage,
-          applyToDocument: _applyToDocument,
-          ...prefs
-        } = state
-        return prefs
+        const excluded = new Set([
+          'menuOpen',
+          'liveRegionLog',
+          'setPreference',
+          'toggleMenu',
+          'setMenuOpen',
+          'addLiveRegionMessage',
+          'applyToDocument',
+        ])
+        return Object.fromEntries(
+          Object.entries(state).filter(([key]) => !excluded.has(key)),
+        ) as AccessibilityPreferences
       },
     },
   ),

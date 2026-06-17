@@ -17,6 +17,69 @@ html[data-high-contrast='true'] {
   --color-uni-blue: #60a5fa;
 }
 
+html[data-high-contrast='true'] body,
+html[data-high-contrast='true'] .bg-white,
+html[data-high-contrast='true'] .bg-uni-gray,
+html[data-high-contrast='true'] .bg-slate-50,
+html[data-high-contrast='true'] .bg-blue-50,
+html[data-high-contrast='true'] .bg-amber-50 {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+html[data-high-contrast='true'] .text-uni-navy,
+html[data-high-contrast='true'] .text-uni-slate,
+html[data-high-contrast='true'] .text-slate-600,
+html[data-high-contrast='true'] .text-slate-700,
+html[data-high-contrast='true'] .text-gray-600,
+html[data-high-contrast='true'] h1,
+html[data-high-contrast='true'] h2,
+html[data-high-contrast='true'] h3,
+html[data-high-contrast='true'] h4,
+html[data-high-contrast='true'] h5,
+html[data-high-contrast='true'] h6,
+html[data-high-contrast='true'] p,
+html[data-high-contrast='true'] span,
+html[data-high-contrast='true'] li,
+html[data-high-contrast='true'] label,
+html[data-high-contrast='true'] summary,
+html[data-high-contrast='true'] td,
+html[data-high-contrast='true'] th {
+  color: #ffffff !important;
+}
+
+html[data-high-contrast='true'] .text-uni-blue,
+html[data-high-contrast='true'] a {
+  color: #93c5fd !important;
+}
+
+html[data-high-contrast='true'] .text-uni-error,
+html[data-high-contrast='true'] [role='alert'] {
+  color: #fca5a5 !important;
+}
+
+html[data-high-contrast='true'] .text-uni-success {
+  color: #86efac !important;
+}
+
+html[data-high-contrast='true'] .border,
+html[data-high-contrast='true'] .border-t,
+html[data-high-contrast='true'] .border-b,
+html[data-high-contrast='true'] .border-l,
+html[data-high-contrast='true'] .border-uni-border,
+html[data-high-contrast='true'] input,
+html[data-high-contrast='true'] select,
+html[data-high-contrast='true'] textarea {
+  border-color: #ffffff !important;
+}
+
+html[data-high-contrast='true'] input,
+html[data-high-contrast='true'] select,
+html[data-high-contrast='true'] textarea {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
 html[data-colorblind='protanopia'] {
   filter: url('#protanopia-filter');
 }
@@ -40,6 +103,7 @@ html[data-reduce-motion='true'] *::before,
 html[data-reduce-motion='true'] *::after {
   animation: none !important;
   transition: none !important;
+  scroll-behavior: auto !important;
 }
 
 html[data-focus-style='thick'] {
@@ -60,6 +124,10 @@ html[data-show-errors='true'] [aria-invalid='true'] {
   box-shadow: 0 0 0 2px rgba(220, 38, 38, 0.25);
 }
 
+.field-hint {
+  display: none !important;
+}
+
 html[data-show-hints='true'] .field-hint {
   display: block !important;
 }
@@ -72,4 +140,66 @@ html[data-show-headings='true'] h5,
 html[data-show-headings='true'] h6 {
   outline: 2px dashed #2563eb;
   outline-offset: 4px;
+}
+
+.a11y-overlay-badge {
+  position: fixed;
+  z-index: 9200;
+  max-width: 18rem;
+  border: 2px solid #111827;
+  border-radius: 0.375rem;
+  background: #fef3c7;
+  color: #111827;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.25;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.25);
+  pointer-events: none;
+}
+
+.a11y-reading-order-marker {
+  position: fixed;
+  z-index: 6500;
+  display: inline-flex;
+  width: 1.5rem;
+  height: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #92400e;
+  border-radius: 9999px;
+  background: #f59e0b;
+  color: #111827;
+  font-size: 0.75rem;
+  font-weight: 800;
+  line-height: 1;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.25);
+  pointer-events: none;
+}
+
+.a11y-reading-order-target,
+.a11y-image-description-target,
+.a11y-tab-order-target,
+.a11y-role-target,
+.a11y-name-warning-target {
+  outline: 3px solid #f59e0b !important;
+  outline-offset: 3px !important;
+}
+
+.a11y-role-target {
+  outline-color: #7c3aed !important;
+}
+
+.a11y-tab-order-target {
+  outline-color: #2563eb !important;
+}
+
+.a11y-name-warning-target {
+  outline-color: #dc2626 !important;
+}
+
+html[data-no-auto-context-change='true'] select,
+html[data-no-auto-context-change='true'] input,
+html[data-no-auto-context-change='true'] textarea {
+  scroll-margin-top: 5rem;
 }

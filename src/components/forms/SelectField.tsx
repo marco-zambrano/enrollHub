@@ -2,6 +2,7 @@ import { useFormContext, Controller } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { AlertCircle } from 'lucide-react'
 import { Label } from '@/components/ui/label'
+import { useAccessibilityStore } from '@/stores/accessibilityStore'
 
 interface Option {
   value: string
@@ -22,6 +23,7 @@ export function SelectField({ name, label, options, hint, required = false }: Se
     control,
     formState: { errors },
   } = useFormContext()
+  const expandedSuggestions = useAccessibilityStore((s) => s.expandedErrorSuggestions)
   const error = errors[name]?.message as string | undefined
   const hintId = `${name}-hint`
   const errorId = `${name}-error`
@@ -73,7 +75,14 @@ export function SelectField({ name, label, options, hint, required = false }: Se
           aria-live="polite"
         >
           <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
-          {error}
+          <span>
+            {error}
+            {expandedSuggestions && (
+              <span className="mt-1 block text-xs">
+                {t('errorSuggestion')}
+              </span>
+            )}
+          </span>
         </span>
       )}
     </div>

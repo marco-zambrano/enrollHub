@@ -2,11 +2,14 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAccessibilityStore } from '@/stores/accessibilityStore'
 import { useAuthStore } from '@/stores/authStore'
+import i18n from '@/lib/i18n'
 
 export function useKeyboardShortcuts() {
   const navigate = useNavigate()
   const active = useAccessibilityStore((s) => s.characterKeyShortcuts)
   const toggleMenu = useAccessibilityStore((s) => s.toggleMenu)
+  const noAutoContextChange = useAccessibilityStore((s) => s.noAutoContextChange)
+  const addLiveRegionMessage = useAccessibilityStore((s) => s.addLiveRegionMessage)
   const user = useAuthStore((s) => s.user)
 
   useEffect(() => {
@@ -34,19 +37,28 @@ export function useKeyboardShortcuts() {
           e.preventDefault()
           toggleMenu()
           break
-        case 'c':
+        case 'c': {
           e.preventDefault()
           const chatbotBtn = document.querySelector<HTMLButtonElement>('[aria-controls="chatbot-panel"]')
           if (chatbotBtn) chatbotBtn.click()
           break
+        }
         case 'd':
           e.preventDefault()
+          if (noAutoContextChange) {
+            addLiveRegionMessage(i18n.t('a11yContextBlocked'))
+            break
+          }
           if (user?.role === 'admin') navigate('/admin/dashboard')
           else if (user?.role === 'student') navigate('/student/dashboard')
           else navigate('/login')
           break
         case 'h':
           e.preventDefault()
+          if (noAutoContextChange) {
+            addLiveRegionMessage(i18n.t('a11yContextBlocked'))
+            break
+          }
           navigate('/')
           break
       }
@@ -54,5 +66,5 @@ export function useKeyboardShortcuts() {
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [active, navigate, toggleMenu, user])
+  }, [active, addLiveRegionMessage, navigate, noAutoContextChange, toggleMenu, user])
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { useAccessibilityStore } from '@/stores/accessibilityStore'
 
 const SESSION_MS = 15 * 60 * 1000
@@ -11,7 +11,7 @@ export function useSessionTimeout(onTimeout?: () => void) {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const warningRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
-  const resetTimer = () => {
+  const resetTimer = useCallback(() => {
     if (sessionExtension) return
     if (timerRef.current) clearTimeout(timerRef.current)
     if (warningRef.current) clearInterval(warningRef.current)
@@ -31,22 +31,20 @@ export function useSessionTimeout(onTimeout?: () => void) {
         })
       }, 1000)
     }, SESSION_MS - WARNING_MS)
-  }
+  }, [onTimeout, sessionExtension])
 
   useEffect(() => {
-    if (sessionExtension) {
-      setShowWarning(false)
-      return
-    }
-    resetTimer()
+    if (sessionExtension) return
+    const initialTimer = window.setTimeout(resetTimer, 0)
     const events = ['mousedown', 'keydown', 'scroll', 'touchstart'] as const
     events.forEach((e) => window.addEventListener(e, resetTimer))
     return () => {
+      window.clearTimeout(initialTimer)
       events.forEach((e) => window.removeEventListener(e, resetTimer))
       if (timerRef.current) clearTimeout(timerRef.current)
       if (warningRef.current) clearInterval(warningRef.current)
     }
-  }, [sessionExtension])
+  }, [resetTimer, sessionExtension])
 
   const extendSession = () => resetTimer()
 
